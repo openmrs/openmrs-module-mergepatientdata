@@ -66,6 +66,7 @@
 	</pluginRepositories>
 
 	<properties>
+	    <javaVersion>1.8</javaVersion>
 		<openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
 	</properties>
 </project>
