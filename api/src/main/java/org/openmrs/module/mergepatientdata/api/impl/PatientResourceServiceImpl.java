@@ -10,8 +10,11 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mergepatientdata.api.PatientResourceService;
+import org.openmrs.module.mergepatientdata.api.dao.PatientResourceServiceDao;
 
 public class PatientResourceServiceImpl implements PatientResourceService {
+	
+	PatientResourceServiceDao patientResourceDao;
 	
 	PatientService patientService = Context.getPatientService();
 
@@ -119,6 +122,22 @@ public class PatientResourceServiceImpl implements PatientResourceService {
 	public PatientIdentifierType getPatientIdentifierTypeByName(String name) throws APIException {
 		
 		return patientService.getPatientIdentifierTypeByName(name);
+	}
+
+	public PatientResourceServiceDao getPatientResourceDao() {
+		return patientResourceDao;
+	}
+
+	public void setPatientResourceDao(PatientResourceServiceDao patientResourceDao) {
+		this.patientResourceDao = patientResourceDao;
+	}
+
+	public PatientService getPatientService() {
+		return patientService;
+	}
+
+	public void setPatientService(PatientService patientService) {
+		this.patientService = patientService;
 	}
 
 }

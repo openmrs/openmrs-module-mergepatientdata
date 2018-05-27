@@ -40,7 +40,7 @@ public class MergepatientdataServiceTest {
 	MergepatientdataDao dao;
 	
 	
-	UserService userService = Context.getUserService();
+	//MergepatientdataService userService = Context.getService(MergepatientdataService.class);
 	
 	@Test
 	public void saveItem_shouldSetOwnerIfNotSet() {
