@@ -4,16 +4,18 @@ import java.util.List;
 
 import org.junit.Test;
 import org.openmrs.Patient;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import junit.framework.Assert;
 
-public class PatientResourceServiceTest extends BaseModuleContextSensitiveTest {
+public class PatientResourceServiceTest  {
 	
-	@Autowired
-	PatientResourceService service;
+	//@Autowired
+	//PatientResourceService service;
+	PatientService service = Context.getPatientService();
 	
 	@Test
 	public void getAllPatients_shouldReturnAllPatientsInTheEntireContext() {
