@@ -9,9 +9,10 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.db.PatientDAO;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public interface PatientResourceService extends OpenmrsService {
-	//public void setPatientDAO(PatientDAO dao);
 	
 	public Patient savePatient(Patient patient) throws APIException;
 	

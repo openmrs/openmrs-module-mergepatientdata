@@ -16,12 +16,11 @@ import junit.framework.Assert;
 public class PatientResourceServiceTest  extends  BaseModuleContextSensitiveTest{
 	
 	//@Autowired
-	//@Qualifier("patientService")
-	PatientService service ;
+	PatientResourceService service;
 	
 	@Before
 	public void setup() {
-		//PatientResourceService pat = Context.getService(PatientResourceService.class);	
+		service = Context.getService(PatientResourceService.class);	
 	}
 	
 	@Test

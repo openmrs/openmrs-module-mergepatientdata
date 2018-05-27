@@ -9,67 +9,58 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.mergepatientdata.api.PatientResourceService;
 import org.openmrs.module.mergepatientdata.api.dao.PatientResourceServiceDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-public class PatientResourceServiceImpl implements PatientResourceService {
+public class PatientResourceServiceImpl extends BaseOpenmrsService implements PatientResourceService {
 	
-	PatientResourceServiceDao patientResourceDao;
+	@Autowired
+	PatientResourceServiceDao dao;
 	
-	PatientService patientService = Context.getPatientService();
-
-	@Override
-	public void onShutdown() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onStartup() {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public Patient savePatient(Patient patient) throws APIException {
-		return patientService.savePatient(patient);
+		return dao.savePatient(patient);
 	}
 
 	@Override
 	public Patient getPatient(Integer patientId) throws APIException {
 		
-		return patientService.getPatient(patientId);
+		return dao.getPatient(patientId);
 	}
 
 	@Override
 	public Patient getPatientOrPromotePerson(Integer patientOrPersonId) throws APIException {
 		
-		return patientService.getPatientOrPromotePerson(patientOrPersonId);
+		return dao.getPatientOrPromotePerson(patientOrPersonId);
 	}
 
 	@Override
 	public PatientIdentifier getPatientIdentifierByUuid(String uuid) throws APIException {
 	
-		return patientService.getPatientIdentifierByUuid(uuid);
+		return dao.getPatientIdentifierByUuid(uuid);
 	}
 
 	@Override
 	public List<Patient> getAllPatients() throws APIException {
 		
-		return patientService.getAllPatients();
+		return dao.getAllPatients();
 	}
 
 	@Override
 	public List<Patient> getAllPatients(boolean includeVoided) throws APIException {
 		
-		return patientService.getAllPatients(includeVoided);
+		return dao.getAllPatients(includeVoided);
 	}
 
 	@Override
 	public List<Patient> getPatients(String name, String identifier, List<PatientIdentifierType> identifierTypes,
 			boolean matchIdentifierExactly) throws APIException {
 		
-		return patientService.getPatients(name, identifier, identifierTypes, matchIdentifierExactly);
+		return dao.getPatients(name, identifier, identifierTypes, matchIdentifierExactly);
 	}
 
 	@Override
@@ -77,67 +68,59 @@ public class PatientResourceServiceImpl implements PatientResourceService {
 			List<PatientIdentifierType> patientIdentifierTypes, List<Location> locations, List<Patient> patients,
 			Boolean isPreferred) throws APIException {
 		
-		return patientService.getPatientIdentifiers(identifier, patientIdentifierTypes, locations, patients, isPreferred);
+		return dao.getPatientIdentifiers(identifier, patientIdentifierTypes, locations, patients, isPreferred);
 	}
 
 	@Override
 	public PatientIdentifierType savePatientIdentifierType(PatientIdentifierType patientIdentifierType)
 			throws APIException {
 		
-		return patientService.savePatientIdentifierType(patientIdentifierType);
+		return dao.savePatientIdentifierType(patientIdentifierType);
 	}
 
 	@Override
 	public List<PatientIdentifierType> getAllPatientIdentifierTypes() throws APIException {
 		
-		return patientService.getAllPatientIdentifierTypes();
+		return dao.getAllPatientIdentifierTypes();
 	}
 
 	@Override
 	public List<PatientIdentifierType> getAllPatientIdentifierTypes(boolean includeRetired) throws APIException {
 		
-		return patientService.getAllPatientIdentifierTypes(includeRetired);
+		return dao.getAllPatientIdentifierTypes(includeRetired);
 	}
 
 	@Override
 	public List<PatientIdentifierType> getPatientIdentifierTypes(String name, String format, Boolean required,
 			Boolean hasCheckDigit) throws APIException {
 		
-		return patientService.getPatientIdentifierTypes(name, format, required, hasCheckDigit);
+		return dao.getPatientIdentifierTypes(name, format, required, hasCheckDigit);
 	}
 
 	@Override
 	public PatientIdentifierType getPatientIdentifierType(Integer patientIdentifierTypeId) throws APIException {
 		
-		return patientService.getPatientIdentifierType(patientIdentifierTypeId);
+		return dao.getPatientIdentifierType(patientIdentifierTypeId);
 	}
 
 	@Override
 	public PatientIdentifierType getPatientIdentifierTypeByUuid(String uuid) throws APIException {
 		
-		return patientService.getPatientIdentifierTypeByUuid(uuid);
+		return dao.getPatientIdentifierTypeByUuid(uuid);
 	}
 
 	@Override
 	public PatientIdentifierType getPatientIdentifierTypeByName(String name) throws APIException {
 		
-		return patientService.getPatientIdentifierTypeByName(name);
+		return dao.getPatientIdentifierTypeByName(name);
 	}
 
-	public PatientResourceServiceDao getPatientResourceDao() {
-		return patientResourceDao;
+	public PatientResourceServiceDao getDao() {
+		return dao;
 	}
 
-	public void setPatientResourceDao(PatientResourceServiceDao patientResourceDao) {
-		this.patientResourceDao = patientResourceDao;
-	}
-
-	public PatientService getPatientService() {
-		return patientService;
-	}
-
-	public void setPatientService(PatientService patientService) {
-		this.patientService = patientService;
+	public void setDao(PatientResourceServiceDao dao) {
+		this.dao = dao;
 	}
 
 }

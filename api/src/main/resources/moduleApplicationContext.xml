@@ -45,14 +45,14 @@
         </property>
     </bean>
 
-     <bean id="patientResourceService" 
+     <bean id="mergepatientdata.PatientResourceService" 
               class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
       <property name="transactionManager">
             <ref bean="transactionManager" />
         </property>
         <property name="target">
             <bean class="org.openmrs.module.mergepatientdata.api.impl.PatientResourceServiceImpl">
-            <property name="dao" ref="patientResourcedao" />
+            <property name="dao" ref="mergepatientdata.PatientResourceServiceDao" />
             </bean>
         </property>
         <property name="preInterceptors">
@@ -72,7 +72,7 @@
                 <value>org.openmrs.module.mergepatientdata.api.MergepatientdataService</value>
                 <ref bean="mergepatientdata.MergepatientdataService" />
                 <value>org.openmrs.module.mergepatientdata.api.PatientResourceService</value>
-                <ref bean="patientResourceService"/>
+                <ref bean="mergepatientdata.PatientResourceService"/>
             </list>
         </property>
     </bean>
