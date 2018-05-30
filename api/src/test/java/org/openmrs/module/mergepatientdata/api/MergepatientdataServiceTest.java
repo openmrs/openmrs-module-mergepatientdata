@@ -36,15 +36,12 @@ public class MergepatientdataServiceTest {
 	@Autowired
 	MergepatientdataService Service;
 	
-	
 	MergepatientdataDao dao;
-	
 	
 	UserService userService;
 	
 	@Test
 	public void saveItem_shouldSetOwnerIfNotSet() {
-		
 		
 	}
 }

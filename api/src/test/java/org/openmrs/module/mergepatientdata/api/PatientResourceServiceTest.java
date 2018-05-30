@@ -13,15 +13,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import junit.framework.Assert;
 
-public class PatientResourceServiceTest  extends  BaseModuleContextSensitiveTest{
+public class PatientResourceServiceTest extends BaseModuleContextSensitiveTest {
 	
-	//@Autowired
+	@Autowired
 	PatientResourceService service;
-	
-	@Before
-	public void setup() {
-		service = Context.getService(PatientResourceService.class);	
-	}
 	
 	@Test
 	public void getAllPatients_shouldReturnAllPatientsInTheEntireContext() {
@@ -29,5 +24,5 @@ public class PatientResourceServiceTest  extends  BaseModuleContextSensitiveTest
 		Assert.assertNotNull(patients);
 		
 	}
-
+	
 }

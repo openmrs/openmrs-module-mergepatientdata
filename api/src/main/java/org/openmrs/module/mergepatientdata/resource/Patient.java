@@ -9,17 +9,26 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
+import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 
 public class Patient implements MergeAbleResource {
 	
 	private String uuid;
+	
 	private Person person;
+	
 	private List<Identifier> identifiers = new ArrayList<Identifier>();
 	
 	public Patient() {
 		
 	}
 	
+	public Patient(org.openmrs.Patient openmrsPatient) {
+		this.uuid = openmrsPatient.getUuid();
+		this.person = new Person(openmrsPatient.getPerson());
+		this.identifiers = (List<Identifier>) ObjectUtils.getMPDObject(openmrsPatient.getIdentifiers());
+	}
+
 	@Override
 	public BaseOpenmrsObject getOpenMrsObject() {
 		org.openmrs.Patient patient = new org.openmrs.Patient();
@@ -70,29 +79,34 @@ public class Patient implements MergeAbleResource {
 
         return patient;
 	}
-
+	
 	public String getUuid() {
 		return uuid;
 	}
-
+	
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
-
+	
 	public Person getPerson() {
 		return person;
 	}
-
+	
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-
+	
 	public List<Identifier> getIdentifiers() {
 		return identifiers;
 	}
-
+	
 	public void setIdentifiers(List<Identifier> identifiers) {
 		this.identifiers = identifiers;
 	}
-
+	
+	@Override
+	public String toString() {
+		return "PatientUuid#" + this.getUuid()+" , PersonGender#"+person.getGender();
+	}
+	
 }

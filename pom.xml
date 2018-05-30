@@ -67,6 +67,6 @@
 
 	<properties>
 	    <javaVersion>1.8</javaVersion>
-		<openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
+		<openmrsPlatformVersion>2.0.5</openmrsPlatformVersion>
 	</properties>
 </project>

@@ -12,14 +12,14 @@ public class MergeAbleBatchRepo extends LinkedHashMap<Object, ArrayList<? extend
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	public MergeAbleBatchRepo() {
 		super();
 	}
 	
-	public MergeAbleBatchRepo add(MergeAbleDataCategory key,  ArrayList<? extends MergeAbleResource> value) {
+	public MergeAbleBatchRepo add(MergeAbleDataCategory key, ArrayList<? extends MergeAbleResource> value) {
 		put(key, value);
 		return this;
 	}
-
+	
 }

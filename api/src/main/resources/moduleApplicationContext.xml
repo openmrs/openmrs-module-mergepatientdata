@@ -64,16 +64,25 @@
     </bean>        
      
      
-    <!-- Adds MergepatientdataService to OpenMRS context so it can be accessed
+    <!-- Adds MergepatientdataServices to OpenMRS context so it can be accessed
     calling Context.getService(MergepatientdataService.class) -->
+    
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
                 <value>org.openmrs.module.mergepatientdata.api.MergepatientdataService</value>
                 <ref bean="mergepatientdata.MergepatientdataService" />
+            </list>
+        </property>
+    </bean>
+    
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list>
                 <value>org.openmrs.module.mergepatientdata.api.PatientResourceService</value>
                 <ref bean="mergepatientdata.PatientResourceService"/>
             </list>
         </property>
     </bean>
+    
 </beans>

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository("mergepatientdata.PatientResourceServiceDao")
 public class PatientResourceServiceDao {
-
+	
 	@Autowired
 	@Qualifier("patientService")
 	PatientService patientService;
@@ -22,7 +22,7 @@ public class PatientResourceServiceDao {
 	public Patient savePatient(Patient patient) throws APIException {
 		return patientService.savePatient(patient);
 	}
-
+	
 	public Patient getPatient(Integer patientId) throws APIException {
 		
 		return patientService.getPatient(patientId);
@@ -32,70 +32,69 @@ public class PatientResourceServiceDao {
 		
 		return patientService.getPatientOrPromotePerson(patientOrPersonId);
 	}
-
-	public PatientIdentifier getPatientIdentifierByUuid(String uuid) throws APIException {
 	
+	public PatientIdentifier getPatientIdentifierByUuid(String uuid) throws APIException {
+		
 		return patientService.getPatientIdentifierByUuid(uuid);
 	}
-
+	
 	public List<Patient> getAllPatients() throws APIException {
 		
 		return patientService.getAllPatients();
 	}
-
+	
 	public List<Patient> getAllPatients(boolean includeVoided) throws APIException {
 		
 		return patientService.getAllPatients(includeVoided);
 	}
-
+	
 	public List<Patient> getPatients(String name, String identifier, List<PatientIdentifierType> identifierTypes,
-			boolean matchIdentifierExactly) throws APIException {
+	        boolean matchIdentifierExactly) throws APIException {
 		
 		return patientService.getPatients(name, identifier, identifierTypes, matchIdentifierExactly);
 	}
-
+	
 	public List<PatientIdentifier> getPatientIdentifiers(String identifier,
-			List<PatientIdentifierType> patientIdentifierTypes, List<Location> locations, List<Patient> patients,
-			Boolean isPreferred) throws APIException {
+	        List<PatientIdentifierType> patientIdentifierTypes, List<Location> locations, List<Patient> patients,
+	        Boolean isPreferred) throws APIException {
 		
 		return patientService.getPatientIdentifiers(identifier, patientIdentifierTypes, locations, patients, isPreferred);
 	}
-
-	public PatientIdentifierType savePatientIdentifierType(PatientIdentifierType patientIdentifierType)
-			throws APIException {
+	
+	public PatientIdentifierType savePatientIdentifierType(PatientIdentifierType patientIdentifierType) throws APIException {
 		
 		return patientService.savePatientIdentifierType(patientIdentifierType);
 	}
-
+	
 	public List<PatientIdentifierType> getAllPatientIdentifierTypes() throws APIException {
 		
 		return patientService.getAllPatientIdentifierTypes();
 	}
-
+	
 	public List<PatientIdentifierType> getAllPatientIdentifierTypes(boolean includeRetired) throws APIException {
 		
 		return patientService.getAllPatientIdentifierTypes(includeRetired);
 	}
-
+	
 	public List<PatientIdentifierType> getPatientIdentifierTypes(String name, String format, Boolean required,
-			Boolean hasCheckDigit) throws APIException {
+	        Boolean hasCheckDigit) throws APIException {
 		
 		return patientService.getPatientIdentifierTypes(name, format, required, hasCheckDigit);
 	}
-
+	
 	public PatientIdentifierType getPatientIdentifierType(Integer patientIdentifierTypeId) throws APIException {
 		
 		return patientService.getPatientIdentifierType(patientIdentifierTypeId);
 	}
-
+	
 	public PatientIdentifierType getPatientIdentifierTypeByUuid(String uuid) throws APIException {
 		
 		return patientService.getPatientIdentifierTypeByUuid(uuid);
 	}
-
+	
 	public PatientIdentifierType getPatientIdentifierTypeByName(String name) throws APIException {
 		
 		return patientService.getPatientIdentifierTypeByName(name);
 	}
-
+	
 }

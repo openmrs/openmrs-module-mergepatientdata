@@ -8,5 +8,5 @@ public interface MergePatientDataDownloadService {
 	 * This method downloads the {@Link MergeAbleResource} data
 	 */
 	public AuditMessage downloadMergeAblePatientData();
-
+	
 }

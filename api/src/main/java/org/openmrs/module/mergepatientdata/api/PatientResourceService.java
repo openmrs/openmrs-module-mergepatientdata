@@ -8,7 +8,6 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.api.db.PatientDAO;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -47,6 +46,5 @@ public interface PatientResourceService extends OpenmrsService {
 	public PatientIdentifierType getPatientIdentifierTypeByUuid(String uuid) throws APIException;
 	
 	public PatientIdentifierType getPatientIdentifierTypeByName(String name) throws APIException;
-	
 	
 }
