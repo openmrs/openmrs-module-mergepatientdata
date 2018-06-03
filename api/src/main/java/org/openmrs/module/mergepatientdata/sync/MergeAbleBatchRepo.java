@@ -8,9 +8,6 @@ import org.openmrs.module.mergepatientdata.resource.MergeAbleResource;
 
 public class MergeAbleBatchRepo extends LinkedHashMap<Object, ArrayList<? extends Object>> {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	public MergeAbleBatchRepo() {

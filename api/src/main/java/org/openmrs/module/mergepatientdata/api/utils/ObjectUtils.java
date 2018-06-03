@@ -19,31 +19,32 @@ public class ObjectUtils {
 		List<? extends MergeAbleResource> mergeAbleObjects = null;
 		if (openmrsDataSet != null) {
 			mergeAbleObjects = new ArrayList<MergeAbleResource>();
-			List<? extends OpenmrsObject> MPDList = (List<? extends OpenmrsObject>) openmrsDataSet.stream().collect(Collectors.toList());
+			List<? extends OpenmrsObject> MPDList = (List<? extends OpenmrsObject>) openmrsDataSet.stream().collect(
+			    Collectors.toList());
 			String clazz = MergePatientDataUtils.getClassName(MPDList);
-			//System.out.println(clazz);
 			switch (clazz) {
-			case MergePatientDataConctants.PATIENT_RESOURCE_NAME :
-				return convertToMPDPatient(MPDList);
-			
-			case MergePatientDataConctants.LOCATION_RESOURCE_NAME :
-				return convertToMPDLocation(MPDList);
-				
-			case MergePatientDataConctants.PERSON_NAME_RESOURCE_NAME :
-				return convertToMPDPersonName(MPDList);
-			default : //TODO Should throw a MergePatientDataUnknownTypeExption
-				return null;
+				case MergePatientDataConctants.PATIENT_RESOURCE_NAME:
+					return convertToMPDPatient(MPDList);
+					
+				case MergePatientDataConctants.LOCATION_RESOURCE_NAME:
+					return convertToMPDLocation(MPDList);
+					
+				case MergePatientDataConctants.PERSON_NAME_RESOURCE_NAME:
+					return convertToMPDPersonName(MPDList);
+				default: //TODO Should throw a MergePatientDataUnknownTypeExption
+					return null;
 			}
 			
 		}
 		return null;
 	}
+	
 	public static List<Patient> convertToMPDPatient(List<? extends OpenmrsObject> MPDList) {
 		List<Patient> patients = new ArrayList<Patient>();
 		for (OpenmrsObject pat : MPDList) {
 			if (org.openmrs.Patient.class.isAssignableFrom(pat.getClass())) {
-			    org.openmrs.Patient openmrsPatient = (org.openmrs.Patient) pat;
-			    Patient MPDPatient = new Patient(openmrsPatient);
+				org.openmrs.Patient openmrsPatient = (org.openmrs.Patient) pat;
+				Patient MPDPatient = new Patient(openmrsPatient);
 				patients.add(MPDPatient);
 			}
 		}
@@ -53,8 +54,8 @@ public class ObjectUtils {
 	public static List<Location> convertToMPDLocation(List<? extends OpenmrsObject> MPDList) {
 		List<Location> locations = new ArrayList<Location>();
 		for (OpenmrsObject loc : MPDList) {
-			if(org.openmrs.Location.class.isAssignableFrom(loc.getClass())) {
-				org.openmrs.Location openmrsLocation = (org.openmrs.Location)loc;
+			if (org.openmrs.Location.class.isAssignableFrom(loc.getClass())) {
+				org.openmrs.Location openmrsLocation = (org.openmrs.Location) loc;
 				Location location = new Location(openmrsLocation);
 				locations.add(location);
 			}
@@ -65,7 +66,7 @@ public class ObjectUtils {
 	public static List<PersonName> convertToMPDPersonName(List<? extends OpenmrsObject> MPDList) {
 		List<PersonName> personNames = new ArrayList<PersonName>();
 		for (OpenmrsObject name : MPDList) {
-			if(org.openmrs.PersonName.class.isAssignableFrom(name.getClass())) {
+			if (org.openmrs.PersonName.class.isAssignableFrom(name.getClass())) {
 				org.openmrs.PersonName openmrsName = (org.openmrs.PersonName) name;
 				PersonName MPDPersonName = new PersonName(openmrsName);
 				personNames.add(MPDPersonName);
@@ -77,7 +78,7 @@ public class ObjectUtils {
 	public static List<Identifier> convertToMPDIdentifier(List<? extends OpenmrsObject> MPDList) {
 		List<Identifier> patientIdentifiers = new ArrayList<Identifier>();
 		for (OpenmrsObject id : MPDList) {
-			if(org.openmrs.PatientIdentifier.class.isAssignableFrom(id.getClass())) {
+			if (org.openmrs.PatientIdentifier.class.isAssignableFrom(id.getClass())) {
 				org.openmrs.PatientIdentifier openmrsId = (org.openmrs.PatientIdentifier) id;
 				Identifier MPDPatientIdentifier = new Identifier(openmrsId);
 				patientIdentifiers.add(MPDPatientIdentifier);

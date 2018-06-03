@@ -38,6 +38,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+    	       <groupId>com.google.code.gson</groupId>
+    	       <artifactId>gson</artifactId>
+    	       <version>2.6.2</version>
+	        </dependency>
+            
 		</dependencies>
 	</dependencyManagement>
 
@@ -68,5 +74,7 @@
 	<properties>
 	    <javaVersion>1.8</javaVersion>
 		<openmrsPlatformVersion>2.0.5</openmrsPlatformVersion>
+		<maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
 </project>

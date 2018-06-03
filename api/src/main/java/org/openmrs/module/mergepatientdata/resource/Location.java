@@ -51,7 +51,11 @@ public class Location implements MergeAbleResource {
 	public Location(org.openmrs.Location openmrsLocation) {
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	public Location() {
+		
+	}
+	
 	// region getters
 	public String getUuid() {
 		return uuid;

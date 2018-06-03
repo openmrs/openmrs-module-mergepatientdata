@@ -28,7 +28,7 @@ public class Patient implements MergeAbleResource {
 		this.person = new Person(openmrsPatient.getPerson());
 		this.identifiers = (List<Identifier>) ObjectUtils.getMPDObject(openmrsPatient.getIdentifiers());
 	}
-
+	
 	@Override
 	public BaseOpenmrsObject getOpenMrsObject() {
 		org.openmrs.Patient patient = new org.openmrs.Patient();
@@ -106,7 +106,7 @@ public class Patient implements MergeAbleResource {
 	
 	@Override
 	public String toString() {
-		return "PatientUuid#" + this.getUuid()+" , PersonGender#"+person.getGender();
+		return "PatientUuid#" + this.getUuid() + " , PersonGender#" + person.getGender();
 	}
 	
 }

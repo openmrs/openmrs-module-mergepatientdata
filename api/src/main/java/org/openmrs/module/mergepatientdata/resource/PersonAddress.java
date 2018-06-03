@@ -64,7 +64,7 @@ public class PersonAddress extends Address {
 	
 	public PersonAddress(org.openmrs.PersonAddress openmrsPersonAdress) {
 		this.cityVillage = openmrsPersonAdress.getCityVillage();
-		this.countyDistrict  = openmrsPersonAdress.getCountyDistrict();
+		this.countyDistrict = openmrsPersonAdress.getCountyDistrict();
 		this.stateProvince = openmrsPersonAdress.getStateProvince();
 		this.country = openmrsPersonAdress.getCountry();
 		this.postalCode = openmrsPersonAdress.getPostalCode();
