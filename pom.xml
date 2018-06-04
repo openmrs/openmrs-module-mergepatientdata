@@ -38,14 +38,25 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-    	       <groupId>com.google.code.gson</groupId>
-    	       <artifactId>gson</artifactId>
-    	       <version>2.6.2</version>
-	        </dependency>
-            
+             
 		</dependencies>
 	</dependencyManagement>
+    <build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.7.0</version>
+					<configuration>
+						<source>${javaVersion}</source>
+						<target>${javaVersion}</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	
+	</build>
 
 	<repositories>
 		<repository>
@@ -60,6 +71,7 @@
 			<url>http://repo1.maven.org/maven2</url>
 		</repository>
 	</repositories>
+	 
 	<pluginRepositories>
 		<pluginRepository>
 			<id>openmrs-repo</id>
@@ -70,11 +82,10 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
+    
 	<properties>
 	    <javaVersion>1.8</javaVersion>
 		<openmrsPlatformVersion>2.0.5</openmrsPlatformVersion>
-		<maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <javaCompilerVersion>1.8</javaCompilerVersion> 
 	</properties>
 </project>
