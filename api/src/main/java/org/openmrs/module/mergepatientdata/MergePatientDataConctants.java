@@ -24,4 +24,8 @@ public class MergePatientDataConctants {
 	
 	public static final String KEY = "@Jls*#1072Lvq13k";
 	
+	public static final String CONFIG_FILE_NAME = "config.json";
+	
+	public static final String DEFAULT_CONFIG_FILE_NAME = "defaultMPDConfiguration.json";
+	
 }

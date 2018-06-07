@@ -10,6 +10,10 @@ public class GeneralConfiguration {
 	
 	private boolean persistFailureAudit;
 	
+	public GeneralConfiguration() {
+		
+	}
+	
 	public GeneralConfiguration(String localInstanceId, String parentId, boolean persistSuccessAudit,
 	    boolean persistFailureAudit) {
 		super();

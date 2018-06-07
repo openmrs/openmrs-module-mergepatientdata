@@ -1,11 +1,13 @@
 package org.openmrs.module.mergepatientdata.api.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.mergepatientdata.api.MergePatientDataEncryptionService;
 import org.openmrs.module.mergepatientdata.api.MergePatientDataExportService;
 import org.openmrs.module.mergepatientdata.api.PatientResourceService;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
@@ -18,6 +20,8 @@ public class MergePatientDataExportServiceImpl implements MergePatientDataExport
 	
 	MergeAbleBatchRepo repo = new MergeAbleBatchRepo();
 	
+	MergePatientDataEncryptionService encryptionService = new MergePatientDataEncryptionServiceImpl();
+	
 	@Override
 	public MergeAbleBatchRepo exportMergeAblePatientData(List<? extends MergeAbleResource> resourceClassesToExport) {
 		for (MergeAbleResource resource : resourceClassesToExport) {
@@ -26,6 +30,8 @@ public class MergePatientDataExportServiceImpl implements MergePatientDataExport
 				Set<org.openmrs.Patient> openmrsPatients = new HashSet(patientResourceService.getAllPatients());
 				ArrayList<Patient> patients = (ArrayList<Patient>) ObjectUtils.getMPDObject(openmrsPatients);
 				repo.add(MergeAbleDataCategory.PATIENT, patients);
+				File serializedData = encryptionService.serialize(repo);
+				//encryptionService.encrypt(serializedData, outputFile);
 			}
 		}
 		return repo;

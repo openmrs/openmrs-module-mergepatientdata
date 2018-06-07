@@ -20,8 +20,7 @@ public class ObjectUtilsTest extends BaseModuleContextSensitiveTest {
 	
 	private final Logger log = LoggerFactory.getLogger(ObjectUtilsTest.class);
 	
-	//@Autowired
-	PatientResourceService service; //= Context.getService(PatientResourceService.class);
+	PatientResourceService service; 
 	
 	@Before
 	public void setup() {

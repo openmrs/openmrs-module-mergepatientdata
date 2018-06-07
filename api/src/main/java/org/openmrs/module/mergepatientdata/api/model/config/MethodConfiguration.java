@@ -8,6 +8,10 @@ public class MethodConfiguration {
 	
 	private List<ClassConfiguration> classes;
 	
+	public MethodConfiguration() {
+		
+	}
+	
 	public MethodConfiguration(boolean enabled, List<ClassConfiguration> classes) {
 		super();
 		this.enabled = enabled;

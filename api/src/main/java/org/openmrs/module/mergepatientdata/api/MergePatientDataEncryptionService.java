@@ -6,13 +6,12 @@ import org.openmrs.module.mergepatientdata.sync.MergeAbleBatchRepo;
 
 public interface MergePatientDataEncryptionService {
 	
-	public void serialize(MergeAbleBatchRepo repo);
+	public File serialize(MergeAbleBatchRepo repo);
 	
-	public void encrypt(String key, File inputFile, File outputFile);
+	public void encrypt(File inputFile, File outputFile);
 	
 	public void deserialize();
 	
-	public void decrypt(String key, File inputFile, File outputFile);
+	public void decrypt(File inputFile, File outputFile);
 	
-	public void doCryptography(int cipherMode, File input, File output, String key);
 }

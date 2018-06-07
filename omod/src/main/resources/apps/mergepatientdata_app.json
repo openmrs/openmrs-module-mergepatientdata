@@ -1,0 +1,18 @@
+[
+  {
+    "id": "${project.parent.artifactId}.mergePatientDataApp",
+    "description": "${project.parent.artifactId}.description",
+    "extensions": [
+      {
+        "id": "${project.parent.artifactId}.homePage",
+        "extensionPointId": "org.openmrs.referenceapplication.homepageLink",
+        "type": "link",
+        "order": 7,
+        "label": "mergepatientdata.label",
+        "url": "mergepatientdata/mergepatientdata.page",
+        "icon": "icon-random",
+        "requiredPrivilege": "Merge Patient Data"
+      }
+    ]
+ }
+]

@@ -13,7 +13,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Mergepatientdata</name>
-	<description>OpenMRS mvn used for merging patient data</description>
+	<description>OpenMRS module used for merging patient data from one OpenMRS instance to another.</description>
 
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
 
@@ -28,19 +28,6 @@
 		<module>omod</module>
 	</modules>
 
-	<dependencyManagement>
-		<dependencies>
-			<!-- Importing versions from refapp distro -->
-            <dependency>
-                <groupId>org.openmrs.distro</groupId>
-                <artifactId>referenceapplication</artifactId>
-                <version>2.4</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-             
-		</dependencies>
-	</dependencyManagement>
     <build>
 		<pluginManagement>
 			<plugins>
@@ -85,7 +72,9 @@
     
 	<properties>
 	    <javaVersion>1.8</javaVersion>
-		<openmrsPlatformVersion>2.0.5</openmrsPlatformVersion>
+		<openMRSVersion>2.0.5</openMRSVersion>
         <javaCompilerVersion>1.8</javaCompilerVersion> 
+        <uiframeworkVersion>3.6</uiframeworkVersion>
+        <legacyuiVersion>1.0</legacyuiVersion>
 	</properties>
 </project>

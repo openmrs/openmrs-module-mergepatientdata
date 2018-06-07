@@ -9,13 +9,13 @@ import org.openmrs.module.mergepatientdata.api.model.config.MPDConfiguration;
 import org.openmrs.module.mergepatientdata.api.model.config.MethodConfiguration;
 import org.openmrs.module.mergepatientdata.resource.MergeAbleResource;
 import org.openmrs.module.mergepatientdata.sync.MPDClient;
+import org.openmrs.module.mergepatientdata.sync.MPDClientClassBuilder;
 import org.openmrs.module.mergepatientdata.sync.MergeAbleBatchRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MergePatientDataUtils {
 	
-	@Autowired
-	private static MPDClient client;
+	private static MPDClientClassBuilder mpdHelper;
 	
 	public static List<? extends MergeAbleResource> getRequiredTypesToMerge(MPDConfiguration configuration, String method) {
 		
@@ -27,6 +27,7 @@ public class MergePatientDataUtils {
 				MethodConfiguration exportConfig = configuration.getExporting();
 				clazzes = exportConfig.getClasses();
 				for (ClassConfiguration clazz : clazzes) {
+					System.out.println("class name : " + clazz.getClassTitle());
 					Class<? extends MergeAbleResource> resourceType = getMPDTypeFromOpenmrsClassName(clazz.getClassTitle());
 					if (resourceType != null) {
 						requiredResources.add(resourceType);
@@ -60,6 +61,9 @@ public class MergePatientDataUtils {
 	}
 	
 	private static Class<? extends MergeAbleResource> getMPDTypeFromOpenmrsClassName(String openmrsClassName) {
+		mpdHelper = new MPDClientClassBuilder();
+		MPDClient client = mpdHelper.getClient();
+		System.out.println(client);
 		List<MergeAbleResource> supportedClasses = client.getSupportedClasses();
 		
 		for (MergeAbleResource object : supportedClasses) {

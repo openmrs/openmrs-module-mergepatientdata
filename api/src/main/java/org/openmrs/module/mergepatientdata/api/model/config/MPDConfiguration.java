@@ -8,6 +8,10 @@ public class MPDConfiguration {
 	
 	private MethodConfiguration importing;
 	
+	public MPDConfiguration() {
+		
+	}
+	
 	public MPDConfiguration(GeneralConfiguration general, MethodConfiguration exporting, MethodConfiguration importing) {
 		super();
 		this.general = general;

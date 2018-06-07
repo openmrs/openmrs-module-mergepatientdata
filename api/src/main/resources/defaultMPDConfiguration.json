@@ -1,0 +1,38 @@
+{
+  "general" : {
+    "localInstanceId" : "",
+    "parentId" : "",
+    "persistSuccessAudit" : true,
+    "persistFailureAudit" : true
+  },
+  "exporting" : {
+     "enabled" : true,
+     "classes" : [
+       {
+         "enabled" : true,
+         "classTitle": "Patient",
+         "openmrsClass" : "org.openmrs.Patient"
+       },
+       {
+         "enabled" : true,
+         "classTitle": "Location",
+         "openmrsClass" : "org.openmrs.Location"
+       }
+     ]
+  },
+   "importing" : {
+     "enabled" : true,
+     "classes" : [
+       {
+         "enabled" : true,
+         "classTitle": "Patient",
+         "openmrsClass" : "org.openmrs.Patient"
+       },
+       {
+         "enabled" : true,
+         "classTitle": "Location",
+         "openmrsClass" : "org.openmrs.Location"
+       }
+     ]
+  } 
+}
