@@ -1,21 +1,24 @@
 package org.openmrs.module.mergepatientdata.api.impl;
 
-import org.openmrs.module.mergepatientdata.MergePatientDataConctants;
+import java.io.File;
+
+import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
 import org.openmrs.module.mergepatientdata.api.MergePatientDataConfigurationService;
 import org.openmrs.module.mergepatientdata.api.model.config.MPDConfiguration;
 import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataConfigurationUtils;
 import org.openmrs.module.mergepatientdata.enums.ResourcePathType;
+import org.openmrs.util.OpenmrsUtil;
 
 public class MergePatientDataConfigurationServiceImpl implements MergePatientDataConfigurationService {
 	
 	MPDConfiguration configuration;
 	
 	public MergePatientDataConfigurationServiceImpl() {
-		String customFilePath = MergePatientDataConfigurationUtils.getCustomConfigFilePath();
+		String customFilePath = getCustomConfigFilePath();
 		
 		this.configuration = MergePatientDataConfigurationUtils.fileExits(customFilePath) ? MergePatientDataConfigurationUtils
 		        .parseJsonToMPDConfig(customFilePath, ResourcePathType.ASOLUTE) : MergePatientDataConfigurationUtils
-		        .parseJsonToMPDConfig(MergePatientDataConctants.DEFAULT_CONFIG_FILE_NAME, ResourcePathType.RELATIVE);
+		        .parseJsonToMPDConfig(MergePatientDataConstants.DEFAULT_CONFIG_FILE_NAME, ResourcePathType.RELATIVE);
 		
 	}
 	
@@ -34,6 +37,12 @@ public class MergePatientDataConfigurationServiceImpl implements MergePatientDat
 	@Override
 	public MPDConfiguration getMPDConfiguration() {
 		return configuration;
+	}
+	
+	private String getCustomConfigFilePath() {
+		File mpdWorkingDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConstants.MPD_DIR);
+		System.out.println("configDir " + mpdWorkingDir.getAbsolutePath());
+		return new File(mpdWorkingDir, MergePatientDataConstants.CONFIG_FILE_NAME).getAbsolutePath();
 	}
 	
 }

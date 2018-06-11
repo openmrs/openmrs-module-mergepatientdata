@@ -2,7 +2,9 @@ package org.openmrs.module.mergepatientdata.resource;
 
 import java.util.Date;
 
-public class PersonAddress extends Address {
+import org.openmrs.BaseOpenmrsObject;
+
+public class PersonAddress implements MergeAbleResource {
 	
 	private Integer personAddressId;
 	
@@ -115,62 +117,50 @@ public class PersonAddress extends Address {
 		this.preferred = preferred;
 	}
 	
-	@Override
 	public String getAddress1() {
 		return address1;
 	}
 	
-	@Override
 	public void setAddress1(String address1) {
 		this.address1 = address1;
 	}
 	
-	@Override
 	public String getAddress2() {
 		return address2;
 	}
 	
-	@Override
 	public void setAddress2(String address2) {
 		this.address2 = address2;
 	}
 	
-	@Override
 	public String getAddress3() {
 		return address3;
 	}
 	
-	@Override
 	public void setAddress3(String address3) {
 		this.address3 = address3;
 	}
 	
-	@Override
 	public String getAddress4() {
 		return address4;
 	}
 	
-	@Override
 	public void setAddress4(String address4) {
 		this.address4 = address4;
 	}
 	
-	@Override
 	public String getAddress5() {
 		return address5;
 	}
 	
-	@Override
 	public void setAddress5(String address5) {
 		this.address5 = address5;
 	}
 	
-	@Override
 	public String getAddress6() {
 		return address6;
 	}
 	
-	@Override
 	public void setAddress6(String address6) {
 		this.address6 = address6;
 	}
@@ -247,72 +237,58 @@ public class PersonAddress extends Address {
 		this.address15 = address15;
 	}
 	
-	@Override
 	public String getCityVillage() {
 		return cityVillage;
 	}
 	
-	@Override
 	public void setCityVillage(String cityVillage) {
 		this.cityVillage = cityVillage;
 	}
 	
-	@Override
 	public String getCountyDistrict() {
 		return countyDistrict;
 	}
 	
-	@Override
 	public void setCountyDistrict(String countyDistrict) {
 		this.countyDistrict = countyDistrict;
 	}
 	
-	@Override
 	public String getStateProvince() {
 		return stateProvince;
 	}
 	
-	@Override
 	public void setStateProvince(String stateProvince) {
 		this.stateProvince = stateProvince;
 	}
 	
-	@Override
 	public String getCountry() {
 		return country;
 	}
 	
-	@Override
 	public void setCountry(String country) {
 		this.country = country;
 	}
 	
-	@Override
 	public String getPostalCode() {
 		return postalCode;
 	}
 	
-	@Override
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 	}
 	
-	@Override
 	public String getLatitude() {
 		return latitude;
 	}
 	
-	@Override
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
 	
-	@Override
 	public String getLongitude() {
 		return longitude;
 	}
 	
-	@Override
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
@@ -331,6 +307,34 @@ public class PersonAddress extends Address {
 	
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	@Override
+	public BaseOpenmrsObject getOpenMrsObject() {
+		org.openmrs.PersonAddress address = new org.openmrs.PersonAddress();
+		address.setAddress1(address1);
+		address.setAddress2(address2);
+		address.setAddress3(address3);
+		address.setAddress4(address4);
+		address.setAddress5(address5);
+		address.setAddress6(address6);
+		address.setAddress7(address7);
+		address.setAddress8(address8);
+		address.setAddress9(address9);
+		address.setAddress10(address10);
+		address.setAddress11(address11);
+		address.setAddress12(address12);
+		address.setAddress13(address13);
+		address.setAddress14(address14);
+		address.setAddress15(address15);
+		address.setLatitude(latitude);
+		address.setLongitude(longitude);
+		address.setCountyDistrict(countyDistrict);
+		address.setPostalCode(postalCode);
+		address.setCountry(country);
+		address.setStateProvince(stateProvince);
+		address.setCityVillage(cityVillage);
+		return address;
 	}
 	
 }

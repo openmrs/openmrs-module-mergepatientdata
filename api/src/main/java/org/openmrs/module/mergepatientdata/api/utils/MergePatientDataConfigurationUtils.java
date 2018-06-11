@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openmrs.module.mergepatientdata.MergePatientDataConctants;
+import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
 import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
 import org.openmrs.module.mergepatientdata.api.model.config.MPDConfiguration;
 import org.openmrs.module.mergepatientdata.enums.ResourcePathType;
@@ -16,8 +16,8 @@ import org.openmrs.util.OpenmrsUtil;
 public class MergePatientDataConfigurationUtils {
 	
 	public static String getCustomConfigFilePath() {
-		File mpdWorkingDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConctants.MPD_DIR);
-		return new File(mpdWorkingDir, MergePatientDataConctants.CONFIG_FILE_NAME).getAbsolutePath();
+		File mpdWorkingDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConstants.MPD_DIR);
+		return new File(mpdWorkingDir, MergePatientDataConstants.CONFIG_FILE_NAME).getAbsolutePath();
 	}
 	
 	public static boolean fileExits(String path) {

@@ -87,8 +87,8 @@
     
     <bean id="patient" class="org.openmrs.module.mergepatientdata.resource.Patient"/>
     <bean id="location" class="org.openmrs.module.mergepatientdata.resource.Location"/>
-    
-    <bean id="mergepatientdata.MPDClient" 
+         
+    <bean id="mpdcient" 
           class="org.openmrs.module.mergepatientdata.sync.MPDClient">
           <property name="supportedClasses">
               <list value-type="org.openmrs.module.mergepatientdata.resource.MergeAbleResource">

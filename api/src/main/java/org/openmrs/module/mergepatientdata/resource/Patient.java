@@ -64,7 +64,7 @@ public class Patient implements MergeAbleResource {
         if (person.getPreferredAddress() != null) {
             preferredAddress = (PersonAddress) person.getPreferredAddress().getOpenMrsObject();
         }
-        for (Address address : person.getAddresses()) {
+        for (org.openmrs.module.mergepatientdata.resource.PersonAddress address : person.getAddresses()) {
             PersonAddress openmrsAddress = (PersonAddress) address.getOpenMrsObject();
             if (preferredAddress != null && preferredAddress.equalsContent(openmrsAddress)) {
                 openmrsAddress.setPreferred(true);

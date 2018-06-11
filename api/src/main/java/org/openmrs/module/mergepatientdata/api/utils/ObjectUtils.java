@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openmrs.OpenmrsObject;
-import org.openmrs.module.mergepatientdata.MergePatientDataConctants;
+import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
 import org.openmrs.module.mergepatientdata.resource.Identifier;
 import org.openmrs.module.mergepatientdata.resource.Location;
 import org.openmrs.module.mergepatientdata.resource.MergeAbleResource;
@@ -23,13 +23,13 @@ public class ObjectUtils {
 			    Collectors.toList());
 			String clazz = MergePatientDataUtils.getClassName(MPDList);
 			switch (clazz) {
-				case MergePatientDataConctants.PATIENT_RESOURCE_NAME:
+				case MergePatientDataConstants.PATIENT_RESOURCE_NAME:
 					return convertToMPDPatient(MPDList);
 					
-				case MergePatientDataConctants.LOCATION_RESOURCE_NAME:
+				case MergePatientDataConstants.LOCATION_RESOURCE_NAME:
 					return convertToMPDLocation(MPDList);
 					
-				case MergePatientDataConctants.PERSON_NAME_RESOURCE_NAME:
+				case MergePatientDataConstants.PERSON_NAME_RESOURCE_NAME:
 					return convertToMPDPersonName(MPDList);
 				default: //TODO Should throw a MergePatientDataUnknownTypeExption
 					return null;

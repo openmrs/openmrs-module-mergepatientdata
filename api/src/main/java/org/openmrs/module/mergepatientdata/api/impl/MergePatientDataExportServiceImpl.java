@@ -23,9 +23,9 @@ public class MergePatientDataExportServiceImpl implements MergePatientDataExport
 	MergePatientDataEncryptionService encryptionService = new MergePatientDataEncryptionServiceImpl();
 	
 	@Override
-	public MergeAbleBatchRepo exportMergeAblePatientData(List<? extends MergeAbleResource> resourceClassesToExport) {
-		for (MergeAbleResource resource : resourceClassesToExport) {
-			if (resource.getClass().isAssignableFrom(Patient.class)) {
+	public MergeAbleBatchRepo exportMergeAblePatientData(List<Class> resourceClassesToExport) {
+		for (Class resource : resourceClassesToExport) {
+			if (resource.isAssignableFrom(Patient.class)) {
 				PatientResourceService patientResourceService = Context.getService(PatientResourceService.class);
 				Set<org.openmrs.Patient> openmrsPatients = new HashSet(patientResourceService.getAllPatients());
 				ArrayList<Patient> patients = (ArrayList<Patient>) ObjectUtils.getMPDObject(openmrsPatients);

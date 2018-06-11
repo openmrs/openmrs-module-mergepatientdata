@@ -12,6 +12,7 @@ public class MPDClientTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	public MPDClient client;
 	
+	
 	MergePatientDataConfigurationService configService;
 	
 	

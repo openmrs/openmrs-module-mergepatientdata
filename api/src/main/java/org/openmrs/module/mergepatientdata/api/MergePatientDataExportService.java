@@ -11,6 +11,6 @@ public interface MergePatientDataExportService {
 	/*
 	 * This method uploads the {@Link MergeAbleResource} data
 	 */
-	public MergeAbleBatchRepo exportMergeAblePatientData(List<? extends MergeAbleResource> resourceClassesToExport);
+	public MergeAbleBatchRepo exportMergeAblePatientData(List<Class> resourceClassesToExport);
 	
 }

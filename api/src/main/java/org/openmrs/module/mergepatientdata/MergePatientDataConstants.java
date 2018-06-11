@@ -1,6 +1,6 @@
 package org.openmrs.module.mergepatientdata;
 
-public class MergePatientDataConctants {
+public class MergePatientDataConstants {
 	
 	public static final String PATIENT_RESOURCE_NAME = "Patient";
 	

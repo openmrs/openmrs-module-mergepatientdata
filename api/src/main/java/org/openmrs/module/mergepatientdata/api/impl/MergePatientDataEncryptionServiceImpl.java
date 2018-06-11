@@ -17,7 +17,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.openmrs.module.mergepatientdata.MergePatientDataConctants;
+import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
 import org.openmrs.module.mergepatientdata.api.MergePatientDataEncryptionService;
 import org.openmrs.module.mergepatientdata.sync.MergeAbleBatchRepo;
 import org.openmrs.util.OpenmrsUtil;
@@ -31,8 +31,10 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 		String filePath = getSerializedFilePath();
 		Gson gson = new Gson();
 		byte[] bytes = gson.toJson(repo).getBytes();
-		
+		System.out.println("Hey there");
 		File inputfile = new File(filePath);
+		
+		System.out.println(filePath);
 		
 		try {
 			
@@ -53,7 +55,7 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 	
 	@Override
 	public void encrypt(File inputFile, File outputFile) {
-		doCryptography(Cipher.ENCRYPT_MODE, inputFile, outputFile, MergePatientDataConctants.KEY);
+		doCryptography(Cipher.ENCRYPT_MODE, inputFile, outputFile, MergePatientDataConstants.KEY);
 	}
 	
 	@Override
@@ -63,18 +65,18 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 	
 	@Override
 	public void decrypt(File inputFile, File outputFile) {
-		doCryptography(Cipher.DECRYPT_MODE, inputFile, outputFile, MergePatientDataConctants.KEY);
+		doCryptography(Cipher.DECRYPT_MODE, inputFile, outputFile, MergePatientDataConstants.KEY);
 	}
 	
 	public static void doCryptography(int cipherMode, File input, File output, String key) {
         FileInputStream inputStream = null;
         FileOutputStream outputStream = null;
-		Key secretKey = new SecretKeySpec(key.getBytes(), MergePatientDataConctants.ALGORITHM);
+		Key secretKey = new SecretKeySpec(key.getBytes(), MergePatientDataConstants.ALGORITHM);
 		Cipher cipher = null;
 	    byte[] inputBytes = null;
 	    byte[] outputBytes = null;
 		try {
-			cipher = Cipher.getInstance(MergePatientDataConctants.TRANSFORMATION);
+			cipher = Cipher.getInstance(MergePatientDataConstants.TRANSFORMATION);
 			cipher.init(cipherMode, secretKey);
 			inputStream = new FileInputStream(input);
 			inputBytes = new byte[(int) input.length()];
@@ -94,7 +96,7 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 	}
 	
 	private String getSerializedFilePath() {
-		File mpdFileFolder = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConctants.MPD_DIR);
-		return new File(mpdFileFolder, MergePatientDataConctants.MPD_SERIALIZED_FILE_NAME).getAbsolutePath();
+		File mpdFileFolder = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConstants.MPD_DIR);
+		return new File(mpdFileFolder, MergePatientDataConstants.MPD_SERIALIZED_FILE_NAME).getAbsolutePath();
 	}
 }
