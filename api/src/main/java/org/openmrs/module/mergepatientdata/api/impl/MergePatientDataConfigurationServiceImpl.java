@@ -39,7 +39,7 @@ public class MergePatientDataConfigurationServiceImpl implements MergePatientDat
 		return configuration;
 	}
 	
-	private String getCustomConfigFilePath() {
+	public String getCustomConfigFilePath() {
 		File mpdWorkingDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConstants.MPD_DIR);
 		System.out.println("configDir " + mpdWorkingDir.getAbsolutePath());
 		return new File(mpdWorkingDir, MergePatientDataConstants.CONFIG_FILE_NAME).getAbsolutePath();
