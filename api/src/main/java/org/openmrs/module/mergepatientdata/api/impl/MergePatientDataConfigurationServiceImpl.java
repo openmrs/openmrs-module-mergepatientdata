@@ -14,11 +14,6 @@ public class MergePatientDataConfigurationServiceImpl implements MergePatientDat
 	MPDConfiguration configuration;
 	
 	public MergePatientDataConfigurationServiceImpl() {
-		String customFilePath = getCustomConfigFilePath();
-		
-		this.configuration = MergePatientDataConfigurationUtils.fileExits(customFilePath) ? MergePatientDataConfigurationUtils
-		        .parseJsonToMPDConfig(customFilePath, ResourcePathType.ASOLUTE) : MergePatientDataConfigurationUtils
-		        .parseJsonToMPDConfig(MergePatientDataConstants.DEFAULT_CONFIG_FILE_NAME, ResourcePathType.RELATIVE);
 		
 	}
 	
@@ -45,4 +40,11 @@ public class MergePatientDataConfigurationServiceImpl implements MergePatientDat
 		return new File(mpdWorkingDir, MergePatientDataConstants.CONFIG_FILE_NAME).getAbsolutePath();
 	}
 	
+	public void generateConfiguration() {
+        String customFilePath = getCustomConfigFilePath();
+		
+		this.configuration = MergePatientDataConfigurationUtils.fileExits(customFilePath) ? MergePatientDataConfigurationUtils
+		        .parseJsonToMPDConfig(customFilePath, ResourcePathType.ASOLUTE) : MergePatientDataConfigurationUtils
+		        .parseJsonToMPDConfig(MergePatientDataConstants.DEFAULT_CONFIG_FILE_NAME, ResourcePathType.RELATIVE);
+	}
 }
