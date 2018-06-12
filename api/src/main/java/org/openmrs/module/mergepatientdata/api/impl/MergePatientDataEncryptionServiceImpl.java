@@ -34,8 +34,6 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 		System.out.println("Hey there");
 		File inputfile = new File(filePath);
 		
-		System.out.println(filePath);
-		
 		try {
 			
 			FileWriter writer = new FileWriter(inputfile);
@@ -97,6 +95,7 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 	
 	private String getSerializedFilePath() {
 		File mpdFileFolder = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConstants.MPD_DIR);
+		System.out.println(mpdFileFolder+";;");
 		return new File(mpdFileFolder, MergePatientDataConstants.MPD_SERIALIZED_FILE_NAME).getAbsolutePath();
 	}
 }

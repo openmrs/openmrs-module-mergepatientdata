@@ -46,5 +46,9 @@ public class MergePatientDataConfigurationServiceImpl implements MergePatientDat
 		this.configuration = MergePatientDataConfigurationUtils.fileExits(customFilePath) ? MergePatientDataConfigurationUtils
 		        .parseJsonToMPDConfig(customFilePath, ResourcePathType.ASOLUTE) : MergePatientDataConfigurationUtils
 		        .parseJsonToMPDConfig(MergePatientDataConstants.DEFAULT_CONFIG_FILE_NAME, ResourcePathType.RELATIVE);
+		        
+		//Double check Openmrs AppData dir
+		String path =  OpenmrsUtil.getApplicationDataDirectory();
+		System.out.println(path);
 	}
 }

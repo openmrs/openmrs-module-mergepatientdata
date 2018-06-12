@@ -13,12 +13,13 @@ public class MPDClientTest extends BaseModuleContextSensitiveTest {
 	public MPDClient client;
 	
 	
-	MergePatientDataConfigurationService configService;
+	MergePatientDataConfigurationServiceImpl configService;
 	
 	
 	@Before
 	public void setup() {
 		configService = new MergePatientDataConfigurationServiceImpl();
+		configService.generateConfiguration();
 	}
 	
 	@Test
