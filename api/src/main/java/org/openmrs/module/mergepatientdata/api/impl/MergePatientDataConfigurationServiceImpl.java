@@ -8,13 +8,16 @@ import org.openmrs.module.mergepatientdata.api.model.config.MPDConfiguration;
 import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataConfigurationUtils;
 import org.openmrs.module.mergepatientdata.enums.ResourcePathType;
 import org.openmrs.util.OpenmrsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MergePatientDataConfigurationServiceImpl implements MergePatientDataConfigurationService {
+	
+	private final Logger log = LoggerFactory.getLogger(MergePatientDataConfigurationServiceImpl.class);
 	
 	MPDConfiguration configuration;
 	
 	public MergePatientDataConfigurationServiceImpl() {
-		
 	}
 	
 	@Override
@@ -36,19 +39,16 @@ public class MergePatientDataConfigurationServiceImpl implements MergePatientDat
 	
 	public String getCustomConfigFilePath() {
 		File mpdWorkingDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConstants.MPD_DIR);
-		System.out.println("configDir " + mpdWorkingDir.getAbsolutePath());
+		log.info("created MPD working directory : {}", mpdWorkingDir);
 		return new File(mpdWorkingDir, MergePatientDataConstants.CONFIG_FILE_NAME).getAbsolutePath();
 	}
 	
 	public void generateConfiguration() {
-        String customFilePath = getCustomConfigFilePath();
-		
+		log.info("Retrieving configuration");
+		String customFilePath = getCustomConfigFilePath();
+		log.info("Custom Config file path : {}", customFilePath);
 		this.configuration = MergePatientDataConfigurationUtils.fileExits(customFilePath) ? MergePatientDataConfigurationUtils
 		        .parseJsonToMPDConfig(customFilePath, ResourcePathType.ASOLUTE) : MergePatientDataConfigurationUtils
 		        .parseJsonToMPDConfig(MergePatientDataConstants.DEFAULT_CONFIG_FILE_NAME, ResourcePathType.RELATIVE);
-		        
-		//Double check Openmrs AppData dir
-		String path =  OpenmrsUtil.getApplicationDataDirectory();
-		System.out.println(path);
 	}
 }

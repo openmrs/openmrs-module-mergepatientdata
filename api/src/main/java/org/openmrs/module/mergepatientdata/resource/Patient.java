@@ -9,9 +9,10 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
+import org.openmrs.module.mergepatientdata.Resource;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 
-public class Patient implements MergeAbleResource {
+public class Patient extends Resource implements MergeAbleResource {
 	
 	private String uuid;
 	
@@ -26,7 +27,8 @@ public class Patient implements MergeAbleResource {
 	public Patient(org.openmrs.Patient openmrsPatient) {
 		this.uuid = openmrsPatient.getUuid();
 		this.person = new Person(openmrsPatient.getPerson());
-		this.identifiers = (List<Identifier>) ObjectUtils.getMPDObject(openmrsPatient.getIdentifiers());
+		this.identifiers = (List<Identifier>) ObjectUtils.getMPDResourceObjectsFromOpenmrsResourceObjects(openmrsPatient
+		        .getIdentifiers());
 	}
 	
 	@Override

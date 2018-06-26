@@ -18,5 +18,5 @@ public class MergePatientDataConfigurationServiceTest extends BaseModuleContextS
 	public void getCustomConfigFilePath_shouldReturnAbsoluteCustomFilePath() {
 		configService.generateConfiguration();
 	}
-
+	
 }

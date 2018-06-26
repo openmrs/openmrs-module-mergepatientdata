@@ -20,7 +20,7 @@ public class ObjectUtilsTest extends BaseModuleContextSensitiveTest {
 	
 	private final Logger log = LoggerFactory.getLogger(ObjectUtilsTest.class);
 	
-	PatientResourceService service; 
+	PatientResourceService service;
 	
 	@Before
 	public void setup() {
@@ -31,7 +31,8 @@ public class ObjectUtilsTest extends BaseModuleContextSensitiveTest {
 	public void getMPDAObject_shouldReturnMPDPatientObjects() {
 		Set<org.openmrs.Patient> openmrsPatients = new HashSet(service.getAllPatients());
 		@SuppressWarnings("unchecked")
-		List<Patient> patients = (List<Patient>) ObjectUtils.getMPDObject(openmrsPatients);
+		List<Patient> patients = (List<Patient>) ObjectUtils
+		        .getMPDResourceObjectsFromOpenmrsResourceObjects(openmrsPatients);
 		Assert.isTrue(patients.size() == 4);
 		
 	}

@@ -28,4 +28,5 @@ public class MergePatientDataConstants {
 	
 	public static final String DEFAULT_CONFIG_FILE_NAME = "defaultMPDConfiguration.json";
 	
+	public static final String ENCRYPTED_PATIENT_DATA_FILE_NAME = "encrytedMergeableData.mpd";
 }

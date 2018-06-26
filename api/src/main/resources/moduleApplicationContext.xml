@@ -45,25 +45,6 @@
         </property>
     </bean>
 
-     <bean id="mergepatientdata.PatientResourceService" 
-              class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-      <property name="transactionManager">
-            <ref bean="transactionManager" />
-        </property>
-        <property name="target">
-            <bean class="org.openmrs.module.mergepatientdata.api.impl.PatientResourceServiceImpl">
-            <property name="dao" ref="mergepatientdata.PatientResourceServiceDao" />
-            </bean>
-        </property>
-        <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
-        </property>
-        <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
-        </property>
-    </bean>        
-     
-     
     <!-- Adds MergepatientdataServices to OpenMRS context so it can be accessed
     calling Context.getService(MergepatientdataService.class) -->
     
@@ -76,18 +57,9 @@
         </property>
     </bean>
     
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list>
-                <value>org.openmrs.module.mergepatientdata.api.PatientResourceService</value>
-                <ref bean="mergepatientdata.PatientResourceService"/>
-            </list>
-        </property>
-    </bean>
-    
     <bean id="patient" class="org.openmrs.module.mergepatientdata.resource.Patient"/>
     <bean id="location" class="org.openmrs.module.mergepatientdata.resource.Location"/>
-         
+    
     <bean id="mpdcient" 
           class="org.openmrs.module.mergepatientdata.sync.MPDClient">
           <property name="supportedClasses">

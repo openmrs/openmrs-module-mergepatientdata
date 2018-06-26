@@ -14,7 +14,7 @@
          "openmrsClass" : "org.openmrs.Patient"
        },
        {
-         "enabled" : true,
+         "enabled" : false,
          "classTitle": "Location",
          "openmrsClass" : "org.openmrs.Location"
        }
@@ -29,7 +29,7 @@
          "openmrsClass" : "org.openmrs.Patient"
        },
        {
-         "enabled" : true,
+         "enabled" : false,
          "classTitle": "Location",
          "openmrsClass" : "org.openmrs.Location"
        }

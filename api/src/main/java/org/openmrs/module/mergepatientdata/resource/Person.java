@@ -46,8 +46,10 @@ public class Person {
 	public Person(org.openmrs.Person openmrsPerson) {
 		this.uuid = openmrsPerson.getUuid();
 		this.preferredName = new PersonName(openmrsPerson.getPersonName());
-		this.addresses = (List<PersonAddress>) ObjectUtils.getMPDObject(openmrsPerson.getAddresses());
-		this.names = (List<PersonName>) ObjectUtils.getMPDObject(openmrsPerson.getNames());
+		this.addresses = (List<PersonAddress>) ObjectUtils.getMPDResourceObjectsFromOpenmrsResourceObjects(openmrsPerson
+		        .getAddresses());
+		this.names = (List<PersonName>) ObjectUtils
+		        .getMPDResourceObjectsFromOpenmrsResourceObjects(openmrsPerson.getNames());
 		this.birthdate = openmrsPerson.getBirthdate();
 		this.birthdateEstimated = openmrsPerson.getBirthdateEstimated();
 		this.age = openmrsPerson.getAge();

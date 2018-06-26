@@ -8,10 +8,10 @@ public interface MergePatientDataEncryptionService {
 	
 	public File serialize(MergeAbleBatchRepo repo);
 	
-	public void encrypt(File inputFile, File outputFile);
+	public File encrypt(File inputFile);
 	
-	public void deserialize();
+	public MergeAbleBatchRepo deserialize(File inputFile);
 	
-	public void decrypt(File inputFile, File outputFile);
+	public File decrypt(File inputFile);
 	
 }
