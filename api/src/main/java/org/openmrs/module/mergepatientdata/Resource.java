@@ -1,9 +1,8 @@
 package org.openmrs.module.mergepatientdata;
 
-public class Resource {
+public abstract class Resource {
 
-	public Resource() {
-
+	public org.openmrs.BaseOpenmrsObject getOpenMrsObject() {
+		return null;		
 	}
-
 }

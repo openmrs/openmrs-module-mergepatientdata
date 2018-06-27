@@ -12,7 +12,7 @@ import org.openmrs.PersonName;
 import org.openmrs.module.mergepatientdata.Resource;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 
-public class Patient extends Resource implements MergeAbleResource {
+public class Patient extends Resource {
 	
 	private String uuid;
 	

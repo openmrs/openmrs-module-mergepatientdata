@@ -34,11 +34,13 @@ import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataEncryptionU
 import org.openmrs.module.mergepatientdata.enums.MergeAbleDataCategory;
 import org.openmrs.module.mergepatientdata.resource.MergeAbleResource;
 import org.openmrs.module.mergepatientdata.sync.MergeAbleBatchRepo;
+import org.openmrs.module.mergepatientdata.sync.ResourceDeserializer;
 import org.openmrs.util.OpenmrsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEncryptionService {
@@ -72,7 +74,7 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 	
 	@Override
 	public MergeAbleBatchRepo deserialize(File file) {
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().registerTypeAdapter(Resource.class, new ResourceDeserializer()).create();
 		MergeAbleBatchRepo repo = null;
 		try {
 			
