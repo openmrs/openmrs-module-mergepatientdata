@@ -43,6 +43,7 @@ public class Person {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Person(org.openmrs.Person openmrsPerson) {
 		this.uuid = openmrsPerson.getUuid();
 		this.preferredName = new PersonName(openmrsPerson.getPersonName());

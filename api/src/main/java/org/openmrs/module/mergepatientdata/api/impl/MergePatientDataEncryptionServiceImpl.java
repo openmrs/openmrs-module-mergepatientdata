@@ -13,46 +13,43 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
-import org.openmrs.module.mergepatientdata.Resource;
+import org.openmrs.module.mergepatientdata.api.MergePatientDataAuditService;
 import org.openmrs.module.mergepatientdata.api.MergePatientDataEncryptionService;
+import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
+import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage;
 import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataConfigurationUtils;
 import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataEncryptionUtils;
-import org.openmrs.module.mergepatientdata.enums.MergeAbleDataCategory;
-import org.openmrs.module.mergepatientdata.resource.MergeAbleResource;
-import org.openmrs.module.mergepatientdata.sync.MergeAbleBatchRepo;
-import org.openmrs.module.mergepatientdata.sync.ResourceDeserializer;
-import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.module.mergepatientdata.enums.Status;
+import org.openmrs.module.mergepatientdata.sync.MPDStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEncryptionService {
 	
 	private final Logger log = LoggerFactory.getLogger(MergePatientDataEncryptionServiceImpl.class);
 	
+	private MergePatientDataAuditService auditService;
+	
 	@Override
-	public File serialize(MergeAbleBatchRepo repo) {
+	public File serialize(MPDStore store) {
 		String filePath = MergePatientDataEncryptionUtils.getSerializedFilePath();
 		Gson gson = new Gson();
 		log.info("Serializing to '" + filePath + "'");
-		byte[] bytes = gson.toJson(repo).getBytes();
+		byte[] bytes = gson.toJson(store).getBytes();
 		File inputfile = new File(filePath);
 		
 		try {
@@ -69,46 +66,55 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 		catch (IOException e) {
 			log.error(e.getMessage());
 		}
+		
 		return inputfile;
 	}
 	
 	@Override
-	public MergeAbleBatchRepo deserialize(File file) {
-		Gson gson = new GsonBuilder().registerTypeAdapter(Resource.class, new ResourceDeserializer()).create();
-		MergeAbleBatchRepo repo = null;
+	public MPDStore deserialize(File file) {
+		Gson gson = new Gson();
+		MPDStore store = null;
 		try {
 			
 			InputStream input = new FileInputStream(file);
 			BufferedReader buffer = new BufferedReader(new InputStreamReader(input));
-			Type mergeAbleBatchRepoType =  new TypeToken<LinkedHashMap<MergeAbleDataCategory, Resource>>(){}.getType();
-			repo = gson.fromJson(buffer, mergeAbleBatchRepoType);
+			store = gson.fromJson(buffer, MPDStore.class);
 			buffer.close();
 			
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
 		}
-		return repo;
+		finally {
+			MergePatientDataConfigurationUtils.cleanMPDWorkDir();
+		}
+		return store;
 		
 	}
 	
 	@Override
-	public File encrypt(File inputFile) {
+	public File encrypt(File inputFile, PaginatedAuditMessage auditor) {
 		log.info("Encrypting data");
 		String outputFilePath = MergePatientDataEncryptionUtils.getEncryptedMPDFilePath();
 		File outputFile = new File(outputFilePath);
-		doCryptography(Cipher.ENCRYPT_MODE, inputFile, outputFile);
+		doCryptography(Cipher.ENCRYPT_MODE, inputFile, outputFile, auditor);
+		auditor.setStatus(Status.Success);
+		auditService = Context.getService(MergePatientDataAuditService.class);
+		auditService.saveAuditMessage(auditor);
 		return outputFile;
 	}
 	
 	@Override
-	public File decrypt(File inputFile) {
+	public File decrypt(File inputFile, PaginatedAuditMessage auditor) {
 		File outputFile = new File(MergePatientDataEncryptionUtils.getSerializedFilePath());
-		doCryptography(Cipher.DECRYPT_MODE, inputFile, outputFile);
+		doCryptography(Cipher.DECRYPT_MODE, inputFile, outputFile, auditor);
+		if (inputFile.exists()) {
+			inputFile.delete();
+		}
 		return outputFile;
 	}
 	
-	private void doCryptography(int cipherMode, File input, File output) {
+	private void doCryptography(int cipherMode, File input, File output, PaginatedAuditMessage auditor) {
         FileInputStream inputStream = null;
         FileOutputStream outputStream = null;
         byte rawKey[] = { (byte) 0xA5, (byte) 0x01, (byte) 0x7B, (byte) 0xE5,
@@ -125,6 +131,7 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 	    try {
 			inputStream = new FileInputStream(input);
 		} catch (FileNotFoundException e1) {
+			auditor.getFailureDetails().add(e1.getMessage());
 			e1.printStackTrace();
 			//TODO: Try look through the mpd dir and edit the file name. Chances are high for the name to differ "name(2).mpd"
 			//TODO: Clean the working dir
@@ -136,6 +143,7 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 		    data = Files.readAllBytes(path);
 			inputStream.read(data);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IOException e) {
+			auditor.getFailureDetails().add(e.getMessage());
 			log.error(e.getMessage());
 		} 
 		try {
@@ -150,7 +158,9 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 			}
 		} catch (IllegalBlockSizeException | BadPaddingException | IOException e) {
 			log.error(e.getMessage());
+			//Delete the invalid file
+			input.delete(); 
+			throw new MPDException(e);
 		}
-		System.out.println("file created at: " + output.getAbsolutePath());
 	}
 }

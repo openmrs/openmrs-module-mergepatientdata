@@ -76,5 +76,6 @@
         <javaCompilerVersion>1.8</javaCompilerVersion> 
         <uiframeworkVersion>3.6</uiframeworkVersion>
         <legacyuiVersion>1.0</legacyuiVersion>
+        <uicommonsVersion>2.3.0</uicommonsVersion>
 	</properties>
 </project>

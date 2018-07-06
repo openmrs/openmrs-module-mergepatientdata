@@ -6,7 +6,7 @@ public interface MergePatientDataConfigurationService {
 	
 	public void saveConfiguration(MPDConfiguration configuration);
 	
-	public void saveConfiguration(String jsonConfiguration);
+	public boolean saveConfiguration(String jsonConfiguration);
 	
 	public MPDConfiguration getMPDConfiguration();
 	

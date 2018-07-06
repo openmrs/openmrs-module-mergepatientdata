@@ -7,6 +7,8 @@ import org.openmrs.api.context.Context;
 
 public class LocationTag implements MergeAbleResource {
 	
+	private Integer id;
+	
 	private String uuid;
 	
 	private String name;
@@ -14,6 +16,14 @@ public class LocationTag implements MergeAbleResource {
 	private String description;
 	
 	private boolean retired;
+	
+	public LocationTag(org.openmrs.LocationTag tag) {
+		this.id = tag.getId();
+		this.uuid = tag.getUuid();
+		this.name = tag.getName();
+		this.description = tag.getDescription();
+		this.retired = tag.getRetired();
+	}
 	
 	@Override
 	public BaseOpenmrsObject getOpenMrsObject() {
@@ -25,6 +35,14 @@ public class LocationTag implements MergeAbleResource {
 		}
 		
 		return Context.getLocationService().getLocationTagByName(name);
+	}
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 	public String getUuid() {

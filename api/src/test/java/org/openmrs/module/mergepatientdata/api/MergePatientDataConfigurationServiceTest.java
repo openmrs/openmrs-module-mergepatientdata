@@ -6,17 +6,5 @@ import org.openmrs.module.mergepatientdata.api.impl.MergePatientDataConfiguratio
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class MergePatientDataConfigurationServiceTest extends BaseModuleContextSensitiveTest {
-	
-	MergePatientDataConfigurationServiceImpl configService;
-	
-	@Before
-	public void setup() {
-		configService = new MergePatientDataConfigurationServiceImpl();
-	}
-	
-	@Test
-	public void getCustomConfigFilePath_shouldReturnAbsoluteCustomFilePath() {
-		configService.generateConfiguration();
-	}
-	
+	//TODO :-Write Test cases for this class
 }

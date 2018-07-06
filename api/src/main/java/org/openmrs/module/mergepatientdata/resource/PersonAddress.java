@@ -74,7 +74,6 @@ public class PersonAddress implements MergeAbleResource {
 		this.startDate = openmrsPersonAdress.getStartDate();
 		this.endDate = openmrsPersonAdress.getEndDate();
 		this.personAddressId = openmrsPersonAdress.getPersonAddressId();
-		this.person = new Person(openmrsPersonAdress.getPerson());
 		this.preferred = openmrsPersonAdress.getPreferred();
 		this.address1 = openmrsPersonAdress.getAddress1();
 		this.address2 = openmrsPersonAdress.getAddress2();

@@ -23,7 +23,7 @@ public class Identifier implements MergeAbleResource {
 		this.uuid = openmrPatientIdentifier.getUuid();
 		this.identifier = openmrPatientIdentifier.getIdentifier();
 		this.identifierType = new IdentifierType(openmrPatientIdentifier.getIdentifierType());
-		this.location = new Location(openmrPatientIdentifier.getLocation());
+		this.location = new Location(openmrPatientIdentifier.getLocation(), true);
 		this.preferred = openmrPatientIdentifier.getPreferred();
 		this.voided = openmrPatientIdentifier.getVoided();
 		
@@ -32,16 +32,16 @@ public class Identifier implements MergeAbleResource {
 	@Override
 	public BaseOpenmrsObject getOpenMrsObject() {
 		org.openmrs.PatientIdentifier patientIdentifier = new org.openmrs.PatientIdentifier();
-		patientIdentifier.setUuid(uuid);
-		patientIdentifier.setIdentifier(identifier);
+		patientIdentifier.setUuid(this.uuid);
+		patientIdentifier.setIdentifier(this.identifier);
 		if (identifierType != null) {
 			patientIdentifier.setIdentifierType((PatientIdentifierType) identifierType.getOpenMrsObject());
 		}
 		if (location != null) {
 			patientIdentifier.setLocation((org.openmrs.Location) location.getOpenMrsObject());
 		}
-		patientIdentifier.setPreferred(preferred);
-		patientIdentifier.setVoided(voided);
+		patientIdentifier.setPreferred(this.preferred);
+		patientIdentifier.setVoided(this.voided);
 		
 		return patientIdentifier;
 	}

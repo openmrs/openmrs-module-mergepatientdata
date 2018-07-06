@@ -6,18 +6,19 @@ import java.util.List;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
-import org.openmrs.module.mergepatientdata.Resource;
 import org.openmrs.module.mergepatientdata.api.PatientResourceService;
 import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
 import org.openmrs.module.mergepatientdata.api.impl.PatientResourceServiceImpl;
+import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage;
 import org.openmrs.module.mergepatientdata.api.model.config.ClassConfiguration;
 import org.openmrs.module.mergepatientdata.api.model.config.MPDConfiguration;
 import org.openmrs.module.mergepatientdata.api.model.config.MethodConfiguration;
 import org.openmrs.module.mergepatientdata.enums.MergeAbleDataCategory;
+import org.openmrs.module.mergepatientdata.enums.Status;
 import org.openmrs.module.mergepatientdata.resource.MergeAbleResource;
 import org.openmrs.module.mergepatientdata.resource.Patient;
 import org.openmrs.module.mergepatientdata.sync.MPDClient;
-import org.openmrs.module.mergepatientdata.sync.MergeAbleBatchRepo;
+import org.openmrs.module.mergepatientdata.sync.MPDStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,8 @@ public class MergePatientDataUtils {
 	 * @param method. Could be export/import
 	 * @return requiredResourceTypes to sync
 	 */
-	public static List<Class> getRequiredTypesToMerge(MPDConfiguration configuration, String method) {
+	public static List<Class> getRequiredTypesToMerge(MPDConfiguration configuration, String method,
+	        PaginatedAuditMessage auditor) {
 		
 		List<ClassConfiguration> clazzes;
 		List<Class> requiredResourceTypes = new ArrayList();
@@ -53,6 +55,7 @@ public class MergePatientDataUtils {
 			switch (method) {
 			
 				case MergePatientDataConstants.EXPORT_GENERAL_NAME:
+					
 					MethodConfiguration exportConfig = configuration.getExporting();
 					clazzes = exportConfig.getClasses();
 					for (ClassConfiguration clazz : clazzes) {
@@ -62,7 +65,12 @@ public class MergePatientDataUtils {
 							Class resourceType = getMPDTypeFromOpenmrsClassName(clazz.getClassTitle());
 							if (resourceType != null) {
 								requiredResourceTypes.add(resourceType);
+								
+								auditor.getResources().add(resourceType.getSimpleName());
 							} else {
+								auditor.setHasErrors(true);
+								auditor.getFailureDetails().add(
+								    "Requested Resource '" + clazz.getClassTitle() + "' isn't supported yet!");
 								//TODO Should handle cases were Resource in null, probably its not yet supported.
 							}
 						}
@@ -71,6 +79,7 @@ public class MergePatientDataUtils {
 					break;
 				
 				case MergePatientDataConstants.IMPORT_GENERAL_NAME:
+					
 					MethodConfiguration importConfig = configuration.getImporting();
 					clazzes = importConfig.getClasses();
 					for (ClassConfiguration clazz : clazzes) {
@@ -99,22 +108,20 @@ public class MergePatientDataUtils {
 	 * @param openmrsData
 	 * @return
 	 */
-	public static String getClassName(List<? extends Object> dataList) {
+	public static String getClassName(List<? extends Object> dataList) throws MPDException {
 		Class type = null;
 		
 		if (dataList != null && dataList.size() > 0) {
 			type = dataList.get(0).getClass();
+			if (type != null) {
+				log.info("Getting class name :{}", type.getSimpleName());
+				return type.getSimpleName();
+			}
 		} else {
 			log.warn("openmrsData looks empty :{}", dataList);
-			//TODO If its empty, It means that Particular resource has no data in DB
 		}
-		if (type != null) {
-			log.info("Getting class name :{}", type.getSimpleName());
-			return type.getSimpleName();
-		}
+		throw new MPDException("Failed to Load Resource Name. Could be Openmrs Database is empty");
 		
-		log.warn("Failed to get Class Name");
-		return null;
 	}
 	
 	/**
@@ -148,20 +155,15 @@ public class MergePatientDataUtils {
 	 * @param resourceType
 	 * @param resourceTypesToImport
 	 */
-	public static void mergeResourceToOpenmrsDataBase(MergeAbleBatchRepo mergeableData, MergeAbleDataCategory resourceType,
-	        List<Class> resourceTypesToImport) {
+	public static void mergeResourceToOpenmrsDataBase(MPDStore store, MergeAbleDataCategory resourceType,
+	        List<Class> resourceTypesToImport, PaginatedAuditMessage auditor) {
 		if (resourceType == MergeAbleDataCategory.PATIENT) {
 			//Check whether its really required
 			if (ObjectUtils.typeRequired(Patient.class, resourceTypesToImport)) {
-				List<Resource> patients =  mergeableData.get(resourceType);
-				for (Resource patient : patients) {
-					Patient pat = (Patient) patient;
-					System.out.println("Patient value " + pat.getPerson().getGender());
-				}
-				//new PatientResourceServiceImpl().savePatients(patients);
+				new PatientResourceServiceImpl().savePatients(store.getPatients(), auditor);
 			}
 		}
-		//Cater for other Resources here..
+		//TODO :- Cater for other Resources here..
 	}
 	
 }

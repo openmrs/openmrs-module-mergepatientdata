@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
 import org.openmrs.module.mergepatientdata.api.MergePatientDataConfigurationService;
+import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
 import org.openmrs.module.mergepatientdata.api.model.config.MPDConfiguration;
 import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataConfigurationUtils;
 import org.openmrs.module.mergepatientdata.enums.ResourcePathType;
@@ -18,18 +19,31 @@ public class MergePatientDataConfigurationServiceImpl implements MergePatientDat
 	MPDConfiguration configuration;
 	
 	public MergePatientDataConfigurationServiceImpl() {
+		generateConfiguration();
 	}
 	
 	@Override
 	public void saveConfiguration(MPDConfiguration configuration) {
-		// TODO Auto-generated method stub
-		
+		MergePatientDataConfigurationUtils.writeSyncConfigurationToJsonFile(configuration,
+		    MergePatientDataConfigurationUtils.getCustomConfigFilePath());
 	}
 	
 	@Override
-	public void saveConfiguration(String jsonConfiguration) {
-		// TODO Auto-generated method stub
+	public boolean saveConfiguration(String jsonConfiguration) {
+		if (MergePatientDataConfigurationUtils.isValidJson(jsonConfiguration)) {
+			try {
+				MPDConfiguration customConfig = MergePatientDataConfigurationUtils
+				        .parseJsonStringToMpdConfiguration(jsonConfiguration);
+				MergePatientDataConfigurationUtils.writeSyncConfigurationToJsonFile(customConfig,
+				    MergePatientDataConfigurationUtils.getCustomConfigFilePath());
+				return true;
+			}
+			catch (MPDException e) {
+				return false;
+			}
+		}
 		
+		return false;
 	}
 	
 	@Override
@@ -37,18 +51,13 @@ public class MergePatientDataConfigurationServiceImpl implements MergePatientDat
 		return configuration;
 	}
 	
-	public String getCustomConfigFilePath() {
-		File mpdWorkingDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConstants.MPD_DIR);
-		log.info("created MPD working directory : {}", mpdWorkingDir);
-		return new File(mpdWorkingDir, MergePatientDataConstants.CONFIG_FILE_NAME).getAbsolutePath();
-	}
-	
 	public void generateConfiguration() {
 		log.info("Retrieving configuration");
-		String customFilePath = getCustomConfigFilePath();
+		String customFilePath = MergePatientDataConfigurationUtils.getCustomConfigFilePath();
 		log.info("Custom Config file path : {}", customFilePath);
 		this.configuration = MergePatientDataConfigurationUtils.fileExits(customFilePath) ? MergePatientDataConfigurationUtils
 		        .parseJsonToMPDConfig(customFilePath, ResourcePathType.ASOLUTE) : MergePatientDataConfigurationUtils
 		        .parseJsonToMPDConfig(MergePatientDataConstants.DEFAULT_CONFIG_FILE_NAME, ResourcePathType.RELATIVE);
 	}
+	
 }

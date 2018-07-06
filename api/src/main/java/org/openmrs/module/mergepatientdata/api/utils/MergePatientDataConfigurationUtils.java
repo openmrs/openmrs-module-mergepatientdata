@@ -6,7 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
+import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
 import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
 import org.openmrs.module.mergepatientdata.api.impl.MergePatientDataEncryptionServiceImpl;
@@ -15,6 +19,8 @@ import org.openmrs.module.mergepatientdata.enums.ResourcePathType;
 import org.openmrs.util.OpenmrsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 public class MergePatientDataConfigurationUtils {
 	
@@ -93,6 +99,49 @@ public class MergePatientDataConfigurationUtils {
 	
 	public static File getMPDWorkingDir() {
 		return OpenmrsUtil.getDirectoryInApplicationDataDirectory(MergePatientDataConstants.MPD_DIR);
+	}
+	
+	public static String writeMPDConfigToJsonString(MPDConfiguration config) {
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+		try {
+			return writer.writeValueAsString(config);
+		}
+		catch (IOException e) {
+			throw new MPDException(e);
+		}
+	}
+	
+	public static boolean isValidJson(String json) throws MPDException {
+		try {
+			final JsonParser parser = new ObjectMapper().getJsonFactory().createJsonParser(json);
+			while (parser.nextToken() != null) {}
+		}
+		catch (JsonParseException jpe) {
+			return false;
+		}
+		catch (IOException e) {
+			throw new MPDException(e);
+		}
+		return true;
+	}
+	
+	public static void writeSyncConfigurationToJsonFile(MPDConfiguration mpdConfigurations, String absolutePath)
+	        throws MPDException {
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+		try {
+			File resultFile = new File(absolutePath);
+			writer.writeValue(resultFile, mpdConfigurations);
+		}
+		catch (IOException e) {
+			throw new MPDException(e);
+		}
+	}
+	
+	public static MPDConfiguration parseJsonStringToMpdConfiguration(String json) {
+		Gson gson = new Gson();
+		return gson.fromJson(json, MPDConfiguration.class);
 	}
 	
 }

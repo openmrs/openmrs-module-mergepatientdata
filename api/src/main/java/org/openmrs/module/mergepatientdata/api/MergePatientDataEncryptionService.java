@@ -2,16 +2,17 @@ package org.openmrs.module.mergepatientdata.api;
 
 import java.io.File;
 
-import org.openmrs.module.mergepatientdata.sync.MergeAbleBatchRepo;
+import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage;
+import org.openmrs.module.mergepatientdata.sync.MPDStore;
 
 public interface MergePatientDataEncryptionService {
 	
-	public File serialize(MergeAbleBatchRepo repo);
+	public File serialize(MPDStore store);
 	
-	public File encrypt(File inputFile);
+	public File encrypt(File inputFile, PaginatedAuditMessage auditor);
 	
-	public MergeAbleBatchRepo deserialize(File inputFile);
+	public MPDStore deserialize(File inputFile);
 	
-	public File decrypt(File inputFile);
+	public File decrypt(File inputFile, PaginatedAuditMessage auditor);
 	
 }

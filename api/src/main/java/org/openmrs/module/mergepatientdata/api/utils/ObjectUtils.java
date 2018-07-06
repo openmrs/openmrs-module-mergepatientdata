@@ -7,11 +7,14 @@ import java.util.stream.Collectors;
 
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
+import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
 import org.openmrs.module.mergepatientdata.enums.MergeAbleDataCategory;
 import org.openmrs.module.mergepatientdata.resource.Identifier;
 import org.openmrs.module.mergepatientdata.resource.Location;
+import org.openmrs.module.mergepatientdata.resource.LocationTag;
 import org.openmrs.module.mergepatientdata.resource.MergeAbleResource;
 import org.openmrs.module.mergepatientdata.resource.Patient;
+import org.openmrs.module.mergepatientdata.resource.PersonAddress;
 import org.openmrs.module.mergepatientdata.resource.PersonName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +30,7 @@ public class ObjectUtils {
 	 * @return {@link MergeAbleResource}s
 	 */
 	public static List<? extends MergeAbleResource> getMPDResourceObjectsFromOpenmrsResourceObjects(
-	        Set<? extends OpenmrsObject> openmrsDataSet) {
+	        Set<? extends OpenmrsObject> openmrsDataSet) throws MPDException {
 		
 		if (openmrsDataSet != null) {
 			log.info("Starting to convert..");
@@ -46,9 +49,18 @@ public class ObjectUtils {
 				case MergePatientDataConstants.PERSON_NAME_RESOURCE_NAME:
 					return convertToMPDPersonName(openmrsResourceObjects);
 					
+				case MergePatientDataConstants.PERSON_ADDRESS_RESOURCE_NAME:
+					return convertToMPDPersonAddress(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.PATIENT_IDENTIFIER_RESOURCE_NAME:
+					return convertToMPDPatientIdentifier(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.LOCATION_TAG_RESOURCE_NAME:
+					return convertToMPDLocationTag(openmrsResourceObjects);
 				default:
 					//TODO Should throw a MergePatientDataUnknownTypeExption
-					return null;
+					throw new MPDException("Un Supported Type : " + clazz);
+					
 			}
 			
 		} else {
@@ -59,13 +71,11 @@ public class ObjectUtils {
 	}
 	
 	public static List<? extends OpenmrsObject> getOpenmrsResourceObjectsFromMPDResourceObjects(
-	        List<? extends MergeAbleResource> mpdList) {
+	        List<? extends MergeAbleResource> mpdList) throws MPDException {
 		if (mpdList != null) {
+			
 			String clazz = MergePatientDataUtils.getClassName(mpdList);
-			for (Object patient : mpdList) {
-				System.out.println("Object Class Name from loop: " + patient.getClass().getName());
-			}
-			System.out.println("Resource Class Name: " + clazz);
+			
 			switch (clazz) {
 				case MergePatientDataConstants.PATIENT_RESOURCE_NAME:
 					log.info("Converting to MPD PatientResource");
@@ -77,7 +87,7 @@ public class ObjectUtils {
 					
 				default:
 					//TODO Should throw a MergePatientDataUnknownTypeExption
-					return null;
+					throw new MPDException("Un Supported Type : " + clazz);
 			}
 		} else {
 			log.warn("mpdList is null");
@@ -133,7 +143,7 @@ public class ObjectUtils {
 			for (OpenmrsObject loc : MPDList) {
 				if (org.openmrs.Location.class.isAssignableFrom(loc.getClass())) {
 					org.openmrs.Location openmrsLocation = (org.openmrs.Location) loc;
-					Location location = new Location(openmrsLocation);
+					Location location = new Location(openmrsLocation, true);
 					locations.add(location);
 				}
 			}
@@ -160,20 +170,51 @@ public class ObjectUtils {
 		return personNames;
 	}
 	
-	public static List<Identifier> convertToMPDIdentifier(List<? extends OpenmrsObject> MPDList) {
-		List<Identifier> patientIdentifiers = new ArrayList<Identifier>();
-		if (MPDList != null) {
-			for (OpenmrsObject id : MPDList) {
-				if (org.openmrs.PatientIdentifier.class.isAssignableFrom(id.getClass())) {
-					org.openmrs.PatientIdentifier openmrsId = (org.openmrs.PatientIdentifier) id;
-					Identifier MPDPatientIdentifier = new Identifier(openmrsId);
-					patientIdentifiers.add(MPDPatientIdentifier);
-				}
+	private static List<? extends MergeAbleResource> convertToMPDPersonAddress(
+	        List<? extends OpenmrsObject> openmrsResourceObjects) {
+		
+		List<PersonAddress> personAddresses = new ArrayList<PersonAddress>();
+		
+		for (OpenmrsObject personAddress : openmrsResourceObjects) {
+			if (org.openmrs.PersonAddress.class.isAssignableFrom(personAddress.getClass())) {
+				org.openmrs.PersonAddress openmrsAddress = (org.openmrs.PersonAddress) personAddress;
+				PersonAddress address = new PersonAddress(openmrsAddress);
+				personAddresses.add(address);
 			}
-		} else {
-			log.warn("MPDList is null");
 		}
-		return patientIdentifiers;
+		
+		return personAddresses;
+	}
+	
+	private static List<? extends MergeAbleResource> convertToMPDPatientIdentifier(
+	        List<? extends OpenmrsObject> openmrsResourceObjects) {
+		
+		List<Identifier> identifiers = new ArrayList<Identifier>();
+		
+		for (OpenmrsObject patientIdentifier : openmrsResourceObjects) {
+			if (org.openmrs.PatientIdentifier.class.isAssignableFrom(patientIdentifier.getClass())) {
+				org.openmrs.PatientIdentifier openmrsPatId = (org.openmrs.PatientIdentifier) patientIdentifier;
+				Identifier id = new Identifier(openmrsPatId);
+				System.out.println("Identifier : " + id.getIdentifierType().getName());
+				identifiers.add(id);
+			}
+		}
+		return identifiers;
+	}
+	
+	private static List<? extends MergeAbleResource> convertToMPDLocationTag(
+	        List<? extends OpenmrsObject> openmrsResourceObjects) {
+		List<LocationTag> tags = new ArrayList<LocationTag>();
+		
+		for (OpenmrsObject locTag : openmrsResourceObjects) {
+			if (org.openmrs.LocationTag.class.isAssignableFrom(locTag.getClass())) {
+				org.openmrs.LocationTag tag = (org.openmrs.LocationTag) locTag;
+				LocationTag mpdTag = new LocationTag(tag);
+				tags.add(mpdTag);
+			}
+		}
+		
+		return tags;
 	}
 	
 	/**

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.openmrs.module.mergepatientdata.api.model.audit">
+    <class name="MergePatientDataAuditMessage" table="mergepatientdata_audit_message">
+        <id column="mergepatientdata_audit_id" name="id" unsaved-value="0">
+            <generator class="native">
+                <param name="sequence">mergepatientdata_audit_id_seq</param>
+            </generator>
+        </id>
+
+        <property column="uuid" name="uuid"/>
+        <property column="status" name="status" type="java.lang.String" />
+        <property column="timestamp" name="timestamp" type="java.util.Date" />
+
+        <property column="resource_name" name="resources" type="java.lang.String" />
+        <property column="failure_details" name="failureDetails" type="java.lang.String" />
+        <property column="operation" name="operation" type="java.lang.String" />
+        <property column="json_resource_object_counter" name="jsonResourceCounterObject" type="java.lang.String" />
+        <property column="origin" name="origin" type="java.lang.String" />
+    </class>
+</hibernate-mapping>

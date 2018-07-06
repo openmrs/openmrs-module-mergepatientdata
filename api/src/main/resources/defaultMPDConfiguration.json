@@ -1,7 +1,6 @@
 {
   "general" : {
-    "localInstanceId" : "",
-    "parentId" : "",
+    "localInstanceId" : "Development Server",
     "persistSuccessAudit" : true,
     "persistFailureAudit" : true
   },

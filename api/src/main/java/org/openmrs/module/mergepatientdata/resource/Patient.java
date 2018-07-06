@@ -9,26 +9,47 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
-import org.openmrs.module.mergepatientdata.Resource;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 
-public class Patient extends Resource {
+public class Patient implements MergeAbleResource {
 	
 	private String uuid;
 	
 	private Person person;
 	
+	private org.openmrs.module.mergepatientdata.resource.PersonAddress address;
+	
+	private Identifier patientIdentifier;
+	
 	private List<Identifier> identifiers = new ArrayList<Identifier>();
 	
 	public Patient() {
-		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Patient(org.openmrs.Patient openmrsPatient) {
 		this.uuid = openmrsPatient.getUuid();
 		this.person = new Person(openmrsPatient.getPerson());
 		this.identifiers = (List<Identifier>) ObjectUtils.getMPDResourceObjectsFromOpenmrsResourceObjects(openmrsPatient
 		        .getIdentifiers());
+		this.address = new org.openmrs.module.mergepatientdata.resource.PersonAddress(openmrsPatient.getPersonAddress());
+		this.patientIdentifier = new Identifier(openmrsPatient.getPatientIdentifier());
+	}
+	
+	public Identifier getPatientIdentifier() {
+		return patientIdentifier;
+	}
+	
+	public void setPatientIdentifier(Identifier patientIdentifier) {
+		this.patientIdentifier = patientIdentifier;
+	}
+	
+	public org.openmrs.module.mergepatientdata.resource.PersonAddress getAddress() {
+		return address;
+	}
+	
+	public void setAddress(org.openmrs.module.mergepatientdata.resource.PersonAddress address) {
+		this.address = address;
 	}
 	
 	@Override
@@ -37,7 +58,7 @@ public class Patient extends Resource {
         patient.setUuid(uuid);
 
         Set<PatientIdentifier> patientIdentifierList = new TreeSet<>();
-        for (Identifier identifier : identifiers) {
+        for (Identifier identifier : this.identifiers) {
             patientIdentifierList.add((PatientIdentifier) identifier.getOpenMrsObject());
         }
         patient.setIdentifiers(patientIdentifierList);
@@ -66,12 +87,14 @@ public class Patient extends Resource {
         if (person.getPreferredAddress() != null) {
             preferredAddress = (PersonAddress) person.getPreferredAddress().getOpenMrsObject();
         }
-        for (org.openmrs.module.mergepatientdata.resource.PersonAddress address : person.getAddresses()) {
-            PersonAddress openmrsAddress = (PersonAddress) address.getOpenMrsObject();
-            if (preferredAddress != null && preferredAddress.equalsContent(openmrsAddress)) {
-                openmrsAddress.setPreferred(true);
+        if (person.getAddresses() != null) {
+        	for (org.openmrs.module.mergepatientdata.resource.PersonAddress address : person.getAddresses()) {
+                PersonAddress openmrsAddress = (PersonAddress) address.getOpenMrsObject();
+                if (preferredAddress != null && preferredAddress.equalsContent(openmrsAddress)) {
+                    openmrsAddress.setPreferred(true);
+                }
+                personAddressesSet.add(openmrsAddress);
             }
-            personAddressesSet.add(openmrsAddress);
         }
         patient.setAddresses(personAddressesSet);
 

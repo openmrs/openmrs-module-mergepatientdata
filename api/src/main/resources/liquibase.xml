@@ -5,35 +5,29 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
  
-    <!--
-    	See http://wiki.openmrs.org/display/docs/Module+liquibase+File for 
-    	documentation on this file.
-    
-        See http://www.liquibase.org/manual/home#available_database_refactorings
-        for a list of supported elements and attributes
-    -->
- 
- 	<!-- Uncomment the changeset below if you want to make the Item class persistable, see also Item and MergepatientdataDaoTest -->
- 	<!--
-	<changeSet id="mergepatientdata-2016-08-02-12-21" author="raff">
+ 	<changeSet id="mergepatientdata-2018-07-06-12-21" author="samuel34">
 		<preConditions onFail="MARK_RAN">
-			<not><tableExists tableName="mergepatientdata_item"/></not>
+			<not><tableExists tableName="mergepatientdata_audit_message"/></not>
 		</preConditions>
 		<comment>
-			Creating the mergepatientdata_item table
+			Creating the mergepatientdata_audit_message table
 		</comment>
-		<createTable tableName="mergepatientdata_item">
-			<column name="mergepatientdata_item_id" type="int" autoIncrement="true">
+		<createTable tableName="mergepatientdata_audit_message">
+			<column name="mergepatientdata_audit_id" type="int" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="uuid" type="char(38)">
 				<constraints nullable="false" unique="true"></constraints>
 			</column>
-			<column name="owner" type="int" />
-			<column name="description" type="varchar(255)" />
+			
+			<column name="operation" type="varchar(255)"/>
+			<column name="resource_name" type="LONGTEXT"/>
+			<column name="timestamp" type="datetime"/>
+			<column name="origin" type="varchar(255)"/>
+			<column name="status" type="varchar(255)"/>
+			<column name="failure_details" type="LONGTEXT"/>
+			<column name="json_resource_object_counter" type="LONGTEXT" />
 		</createTable>
-        <addForeignKeyConstraint constraintName="mergepatientdata_item_owner_fk" baseTableName="mergepatientdata_item" baseColumnNames="owner"  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
-    </changeSet> -->
- 
+    </changeSet>
+    
 </databaseChangeLog>

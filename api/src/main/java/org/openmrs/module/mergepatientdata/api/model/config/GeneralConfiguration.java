@@ -4,8 +4,6 @@ public class GeneralConfiguration {
 	
 	private String localInstanceId;
 	
-	private String parentId;
-	
 	private boolean persistSuccessAudit;
 	
 	private boolean persistFailureAudit;
@@ -18,7 +16,6 @@ public class GeneralConfiguration {
 	    boolean persistFailureAudit) {
 		super();
 		this.localInstanceId = localInstanceId;
-		this.parentId = parentId;
 		this.persistSuccessAudit = persistSuccessAudit;
 		this.persistFailureAudit = persistFailureAudit;
 	}
@@ -29,14 +26,6 @@ public class GeneralConfiguration {
 	
 	public void setLocalInstanceId(String localInstanceId) {
 		this.localInstanceId = localInstanceId;
-	}
-	
-	public String getParentId() {
-		return parentId;
-	}
-	
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
 	}
 	
 	public boolean isPersistSuccessAudit() {

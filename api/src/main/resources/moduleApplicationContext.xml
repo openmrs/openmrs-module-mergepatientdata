@@ -24,17 +24,19 @@
   		    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <context:component-scan base-package="org.openmrs.module.mergepatientdata" />
+    
+    <bean id="mergepatientdata.AuditDao" class="org.openmrs.module.mergepatientdata.api.dao.Impl.MergePatientDataAuditDaoImpl"/>
 
     <!-- Wraps MergepatientdataService methods in DB transactions and OpenMRS interceptors,
     which set audit info like dateCreated, changedBy, etc.-->
-    <bean id="mergepatientdata.MergepatientdataService"
+    <bean id="mergepatientdata.MergepatientdataAuditService"
             class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager" />
         </property>
         <property name="target">
-            <bean class="org.openmrs.module.mergepatientdata.api.impl.MergepatientdataServiceImpl">
-                <property name="dao" ref="mergepatientdata.MergepatientdataDao" />
+            <bean class="org.openmrs.module.mergepatientdata.api.impl.MergePatientDataAuditServiceImpl">
+                <property name="dao" ref="mergepatientdata.AuditDao" />
             </bean>
         </property>
         <property name="preInterceptors">
@@ -48,11 +50,12 @@
     <!-- Adds MergepatientdataServices to OpenMRS context so it can be accessed
     calling Context.getService(MergepatientdataService.class) -->
     
+     
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.openmrs.module.mergepatientdata.api.MergepatientdataService</value>
-                <ref bean="mergepatientdata.MergepatientdataService" />
+                <value>org.openmrs.module.mergepatientdata.api.MergePatientDataAuditService</value>
+                <ref bean="mergepatientdata.MergepatientdataAuditService" />
             </list>
         </property>
     </bean>

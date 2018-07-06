@@ -3,25 +3,47 @@ package org.openmrs.module.mergepatientdata.api.impl;
 import java.util.List;
 
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.mergepatientdata.api.PatientResourceService;
 import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
+import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class PatientResourceServiceImpl extends BaseOpenmrsService implements PatientResourceService {
 	
+	private final static Logger log = LoggerFactory.getLogger(PatientResourceServiceImpl.class);
+	
 	@Override
-	public Patient savePatient(Patient patient) throws APIException {
+	public Patient savePatient(Patient patient, PaginatedAuditMessage auditor) throws APIException {
+		try {
+			return Context.getPatientService().savePatient(patient);
+		}
+		catch (org.openmrs.api.ValidationException e) {
+			//Tried to save an invalid Patient
+			log.warn("Tried to merge an invalid Patient, {}", e.getMessage());
+			auditor.setHasErrors(true);
+			auditor.getFailureDetails().add(
+			    "Failed to Merge 'Patient#" + patient.getPatientIdentifier().getIdentifier() + "' rationale: "
+			            + e.getMessage());
+			//Check whether Patient already exists
+			Patient existingPatient = Context.getPatientService().getPatientByUuid(patient.getUuid());
+			if (existingPatient != null) {
+				if (existingPatient.getId() == patient.getId()) {
+					log.error("Patient: {} already exists", patient.getGivenName());
+				}
+			}
+			
+		}
 		
-		return Context.getPatientService().savePatient(patient);
+		return null;
 	}
 	
 	@Override
@@ -44,19 +66,18 @@ public class PatientResourceServiceImpl extends BaseOpenmrsService implements Pa
 	}
 	
 	@Override
-	public void savePatients(List<org.openmrs.module.mergepatientdata.resource.Patient> patients) {
-		System.out.println("Saving " + patients.size() + " Patients");
+	public void savePatients(List<org.openmrs.module.mergepatientdata.resource.Patient> patients,
+	        PaginatedAuditMessage auditor) {
 		List<org.openmrs.Patient> openmrsPatients = (List<org.openmrs.Patient>) ObjectUtils
 		        .getOpenmrsResourceObjectsFromMPDResourceObjects(patients);
 		
 		if (openmrsPatients != null && !openmrsPatients.isEmpty()) {
-			PatientResourceService patientService = Context.getService(PatientResourceService.class);
-			for (org.openmrs.Patient patient : openmrsPatients) {
-				System.out.println("Saving Patient: " + patient.getGivenName() );
-				patientService.savePatient(patient);
+			PatientResourceService patientService = new PatientResourceServiceImpl();
+			for (org.openmrs.Patient patient : openmrsPatients) {				
+				Patient savedPatient = patientService.savePatient(patient, auditor);	
 			}
 		} else {
-			System.out.println("OpenmrsPatients List invalid : " + openmrsPatients);
+			auditor.getFailureDetails().add("Tried to Merge Empty/null Patient List.");
 		}
 		
 	}
