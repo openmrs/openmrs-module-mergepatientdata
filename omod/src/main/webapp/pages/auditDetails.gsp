@@ -1,6 +1,6 @@
 <%
-    ui.decorateWith("appui", "standardEmrPage")
-    if (context.hasPrivilege("Sync2 Audit Privilege")) {
+    ui.decorateWith("appui", "standardEmrPage" , [ title: ui.message("mergepatientdata.refApp.audit.details.label") ])
+    
 %>
 <% ui.includeCss("mergepatientdata", "jsGrid.css") %>
 <% ui.includeCss("mergepatientdata", "theme.css") %>
@@ -81,4 +81,3 @@
         ${ ui.message("general.cancel") }
     </a>
  
-<% } %>

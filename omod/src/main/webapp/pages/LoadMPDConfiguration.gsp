@@ -1,5 +1,5 @@
 <%
-    ui.decorateWith("appui", "standardEmrPage", [ title: ui.message("sync2.configuration.label") ])
+    ui.decorateWith("appui", "standardEmrPage", [ title: ui.message("mergepatientdata.refApp.config.label") ])
     ui.includeJavascript("mergepatientdata", "loadConfig.js")
 %>
 <script type="text/javascript">

@@ -1,5 +1,5 @@
 <%
- ui.decorateWith("appui", "standardEmrPage") 
+ ui.decorateWith("appui", "standardEmrPage" , [ title: ui.message("mergepatientdata.label") ]) 
  
  ui.includeJavascript("uicommons", "angular.min.js")
  ui.includeJavascript("uicommons", "ngDialog/ngDialog.js")
