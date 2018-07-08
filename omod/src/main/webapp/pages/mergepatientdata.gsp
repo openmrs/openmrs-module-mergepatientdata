@@ -52,7 +52,7 @@
      <i class="icon-calendar"></i>
      ${ ui.message("mergepatientdata.refApp.config.label") }
    </a>
-   <a class="button app big" href="${ ui.pageLink("mergepatientdata", "ExportPatientData") }" id="mergepatientdata.export" onclick="setTimeout(function(){location.reload()},500)" >
+   <a class="button app big" href="${ ui.pageLink("mergepatientdata", "ExportPatientData") }" id="mergepatientdata.export" onclick="setTimeout(function(){location.reload()},1000)" >
      <i class="icon-download"></i>
      ${ ui.message("mergepatientdata.refApp.export.label") }
    </a>

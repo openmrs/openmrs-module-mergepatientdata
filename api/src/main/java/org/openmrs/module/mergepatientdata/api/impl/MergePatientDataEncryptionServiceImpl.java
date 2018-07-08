@@ -34,8 +34,6 @@ import org.openmrs.module.mergepatientdata.enums.Status;
 import org.openmrs.module.mergepatientdata.sync.MPDStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.gson.Gson;
 
 public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEncryptionService {
