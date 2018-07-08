@@ -56,7 +56,7 @@ public class MergePatientDataExportServiceImpl implements MergePatientDataExport
 					auditor.setResourceCount(resourceMapCounter);
 				} catch (MPDException e) {
 					log.error(e.getMessage());
-					auditor.getFailureDetails().add(e.getMessage());	
+					auditor.getFailureDetails().add(e.getMessage());
 				}
 				continue; //Just continue
 			}	

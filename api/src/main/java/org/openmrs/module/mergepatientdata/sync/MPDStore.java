@@ -39,7 +39,9 @@ public class MPDStore {
 	}
 	public boolean hastData() {
 		if (this.patients != null || this.locations != null) {
-			return true;
+			if (!this.patients.isEmpty() || !this.locations.isEmpty()) {
+				return true;
+			}
 		}
 		return false;
 	}

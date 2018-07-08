@@ -11,17 +11,16 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
 import org.openmrs.module.mergepatientdata.api.impl.MergePatientDataConfigurationServiceImpl;
 import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataConfigurationUtils;
 import org.openmrs.module.mergepatientdata.sync.MPDClient;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
-import org.openmrs.ui.framework.page.PageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class ExportPatientDataPageController {
@@ -30,10 +29,13 @@ public class ExportPatientDataPageController {
 	
 	private static final String OPERATION_SUCCESS = "mergepatientdata.refApp.operation.success.label";
 	
+	private static final String OPERATION_FAILURE = "mergepatientdata.refApp.operation.error.label";
+	
 	public String controller(@SpringBean("mpdcient") MPDClient client, HttpServletResponse response, HttpSession session,
 	        UiUtils ui) {
 		MergePatientDataConfigurationServiceImpl configService = new MergePatientDataConfigurationServiceImpl();
 		configService.generateConfiguration();
+		
 		File encryptedFile = client.exportData(configService.getMPDConfiguration());
 		
 		if (encryptedFile != null) {
@@ -55,13 +57,12 @@ public class ExportPatientDataPageController {
 			}
 			catch (IOException e) {
 				log.error(e.getMessage());
+				InfoErrorMessageUtil.flashErrorMessage(session, ui.message(OPERATION_FAILURE));
 			}
 		} else {
-			//Means a serious internal error occurred, couldn't finish Operation
+			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(OPERATION_FAILURE));
 		}
-		InfoErrorMessageUtil.flashInfoMessage(session, ui.message(OPERATION_SUCCESS));
 		
 		return "redirect:/mergepatientdata/mergepatientdata.page";
 	}
-	
 }

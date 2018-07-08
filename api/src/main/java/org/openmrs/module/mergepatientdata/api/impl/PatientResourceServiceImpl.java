@@ -1,15 +1,13 @@
 package org.openmrs.module.mergepatientdata.api.impl;
 
+import java.util.HashMap;
 import java.util.List;
-
 import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.mergepatientdata.api.PatientResourceService;
-import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
 import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 import org.slf4j.Logger;
@@ -73,13 +71,20 @@ public class PatientResourceServiceImpl extends BaseOpenmrsService implements Pa
 		
 		if (openmrsPatients != null && !openmrsPatients.isEmpty()) {
 			PatientResourceService patientService = new PatientResourceServiceImpl();
-			for (org.openmrs.Patient patient : openmrsPatients) {				
-				Patient savedPatient = patientService.savePatient(patient, auditor);	
+			int counter = 0;
+			for (org.openmrs.Patient patient : openmrsPatients) {
+				Patient savedPatient = patientService.savePatient(patient, auditor);
+				if (savedPatient != null) {
+					//Then the Patient was saved
+					counter++;
+				}
+				HashMap<String, Integer> resourceCounter = new HashMap<>();
+				resourceCounter.put("Patient", counter);
+				auditor.setResourceCount(resourceCounter);
 			}
 		} else {
 			auditor.getFailureDetails().add("Tried to Merge Empty/null Patient List.");
 		}
 		
 	}
-	
 }

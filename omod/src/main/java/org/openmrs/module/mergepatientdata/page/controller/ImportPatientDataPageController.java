@@ -59,6 +59,8 @@ public class ImportPatientDataPageController {
 		if (auditor != null) {
 			if (!auditor.isHasErrors() && auditor.getStatus().equals(Status.Success)) {
 				InfoErrorMessageUtil.flashInfoMessage(session, ui.message(OPERATION_SUCCESS));
+			} else {
+				InfoErrorMessageUtil.flashErrorMessage(session, ui.message(OPERATION_FAILURE));
 			}
 		} else {
 			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(OPERATION_FAILURE));
