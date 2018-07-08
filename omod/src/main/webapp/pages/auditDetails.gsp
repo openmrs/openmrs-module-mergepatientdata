@@ -67,7 +67,7 @@
         
         <% errorLogs.each { %> 
             <tr>
-              <td><i class="icon-chevron-right"></i></td>
+              <td align="center"><i class="icon-chevron-right"></i></td>
               <td> ${it} </td>
             </td>
         <% } %>
