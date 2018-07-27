@@ -427,7 +427,7 @@ public class Location implements MergeAbleResource {
 			omrsLocation.setParentLocation((org.openmrs.Location) this.parentLocation.getOpenMrsObject());
 		}
 		
-		if (this.childLocations != null) {
+		if (this.childLocations != null && !this.childLocations.isEmpty()) {
 			@SuppressWarnings("unchecked")
 			Set<org.openmrs.Location> childLocs = new HashSet<>((List<org.openmrs.Location>) 
 				    ObjectUtils.getOpenmrsResourceObjectsFromMPDResourceObjects( new ArrayList<>(childLocations)));

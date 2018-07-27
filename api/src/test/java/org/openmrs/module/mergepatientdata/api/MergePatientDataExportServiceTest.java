@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.openmrs.module.mergepatientdata.api.impl.MergePatientDataExportServiceImpl;
 import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage;
 import org.openmrs.module.mergepatientdata.enums.Operation;
+import org.openmrs.module.mergepatientdata.resource.Encounter;
 import org.openmrs.module.mergepatientdata.resource.Patient;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
@@ -37,6 +38,13 @@ public class MergePatientDataExportServiceTest extends BaseModuleContextSensitiv
 	 */
 	@Test
 	public void exportMergeAblePatientData_shouldExportSerializedPatientDataToDummyFile() {
+		File encryptedFile = exportService.exportMergeAblePatientData(typesToExport, auditor, "Dummy_Server");
+		Assert.assertTrue(encryptedFile.isFile());
+	}
+	
+	@Test
+	public void exportMergeAblePatientData_shouldAlsoExportEncountersToDummyFile() throws Exception {
+		typesToExport.add(Encounter.class);
 		File encryptedFile = exportService.exportMergeAblePatientData(typesToExport, auditor, "Dummy_Server");
 		Assert.assertTrue(encryptedFile.isFile());
 	}

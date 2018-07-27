@@ -51,7 +51,7 @@ public class MergePatientDataConfigurationServiceImpl implements MergePatientDat
 		return configuration;
 	}
 	
-	public void generateConfiguration() {
+	private void generateConfiguration() {
 		log.info("Retrieving configuration");
 		String customFilePath = MergePatientDataConfigurationUtils.getCustomConfigFilePath();
 		log.info("Custom Config file path : {}", customFilePath);

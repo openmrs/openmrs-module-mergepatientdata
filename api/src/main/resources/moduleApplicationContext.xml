@@ -60,8 +60,9 @@
         </property>
     </bean>
     
-    <bean id="patient" class="org.openmrs.module.mergepatientdata.resource.Patient"/>
-    <bean id="location" class="org.openmrs.module.mergepatientdata.resource.Location"/>
+    <bean id="patient" class="org.openmrs.module.mergepatientdata.resource.Patient" />
+    <bean id="location" class="org.openmrs.module.mergepatientdata.resource.Location" />
+    <bean id="encounter" class="org.openmrs.module.mergepatientdata.resource.Encounter" />
     
     <bean id="mpdcient" 
           class="org.openmrs.module.mergepatientdata.sync.MPDClient">
@@ -69,6 +70,7 @@
               <list value-type="org.openmrs.module.mergepatientdata.resource.MergeAbleResource">
                    <ref bean="patient" />
                    <ref bean="location" />
+                   <ref bean="encounter" />
               </list>
           </property>
     </bean>

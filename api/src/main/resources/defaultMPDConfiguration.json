@@ -13,9 +13,14 @@
          "openmrsClass" : "org.openmrs.Patient"
        },
        {
-         "enabled" : false,
+         "enabled" : true,
          "classTitle": "Location",
          "openmrsClass" : "org.openmrs.Location"
+       },
+       {
+         "enabled" : true,
+         "classTitle": "Encounter",
+         "openmrsClass" : "org.openmrs.Encounter"
        }
      ]
   },
@@ -28,9 +33,14 @@
          "openmrsClass" : "org.openmrs.Patient"
        },
        {
-         "enabled" : false,
+         "enabled" : true,
          "classTitle": "Location",
          "openmrsClass" : "org.openmrs.Location"
+       },
+       {
+         "enabled" : true,
+         "classTitle": "Encounter",
+         "openmrsClass" : "org.openmrs.Encounter"
        }
      ]
   } 

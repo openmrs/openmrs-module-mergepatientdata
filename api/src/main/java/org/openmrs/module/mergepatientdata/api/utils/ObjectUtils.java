@@ -1,14 +1,24 @@
 package org.openmrs.module.mergepatientdata.api.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
 import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
-import org.openmrs.module.mergepatientdata.enums.MergeAbleDataCategory;
+import org.openmrs.module.mergepatientdata.resource.ConceptAnswer;
+import org.openmrs.module.mergepatientdata.resource.ConceptAttribute;
+import org.openmrs.module.mergepatientdata.resource.ConceptDescription;
+import org.openmrs.module.mergepatientdata.resource.ConceptMap;
+import org.openmrs.module.mergepatientdata.resource.ConceptName;
+import org.openmrs.module.mergepatientdata.resource.ConceptNameTag;
+import org.openmrs.module.mergepatientdata.resource.ConceptSet;
+import org.openmrs.module.mergepatientdata.resource.Encounter;
 import org.openmrs.module.mergepatientdata.resource.Identifier;
 import org.openmrs.module.mergepatientdata.resource.Location;
 import org.openmrs.module.mergepatientdata.resource.LocationTag;
@@ -29,15 +39,15 @@ public class ObjectUtils {
 	 * @param openmrsDataSet set of data to convert
 	 * @return {@link MergeAbleResource}s
 	 */
-	public static List<? extends MergeAbleResource> getMPDResourceObjectsFromOpenmrsResourceObjects(
+	public static Collection<? extends MergeAbleResource> getMPDResourceObjectsFromOpenmrsResourceObjects(
 	        Set<? extends OpenmrsObject> openmrsDataSet) throws MPDException {
-		
 		if (openmrsDataSet != null) {
 			log.info("Starting to convert..");
 			List<? extends OpenmrsObject> openmrsResourceObjects = (List<? extends OpenmrsObject>) openmrsDataSet.stream()
 			        .collect(Collectors.toList());
 			String clazz = MergePatientDataUtils.getClassName(openmrsResourceObjects);
 			switch (clazz) {
+			
 				case MergePatientDataConstants.PATIENT_RESOURCE_NAME:
 					log.info("Converting to MPD PatientResource");
 					return convertToMPDPatient(openmrsResourceObjects);
@@ -57,14 +67,37 @@ public class ObjectUtils {
 					
 				case MergePatientDataConstants.LOCATION_TAG_RESOURCE_NAME:
 					return convertToMPDLocationTag(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.CONCEPTNAME_RESOURCE_NAME:
+					return convertToMPDConcepName(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.CONCEPTANSWER_RESOURCE_NAME:
+					return convertToMpdConceptAnswer(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.CONCEPTDESCRIPTION_RESOURCE_NAME:
+					return convertToMpdConceptDesc(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.CONCEPTSET_RESOURCE_NAME:
+					return convertToMpdConceptSet(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.CONCEPTATTR_RESOURCE_NAME:
+					return convertToMpdConceptAttr(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.CONCEPTMAP_RESOURCE_NAME:
+					return convertToMpdConceptMap(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.CONCEPTNAMETAG_RESOURCE_NAME:
+					return convertToMpdConceptNameTag(openmrsResourceObjects);
+					
+				case MergePatientDataConstants.ENCOUNTER_RESOURCE_NAME:
+					return convertToMpdEncounter(openmrsResourceObjects);
+					
 				default:
-					//TODO Should throw a MergePatientDataUnknownTypeExption
-					throw new MPDException("Un Supported Type : " + clazz);
+					throw new MPDException("UnSupported Type : " + clazz);
 					
 			}
 			
 		} else {
-			//TOD 
 			log.warn("OpenmrsDataSet is null");
 		}
 		return null;
@@ -73,20 +106,20 @@ public class ObjectUtils {
 	public static List<? extends OpenmrsObject> getOpenmrsResourceObjectsFromMPDResourceObjects(
 	        List<? extends MergeAbleResource> mpdList) throws MPDException {
 		if (mpdList != null) {
-			
 			String clazz = MergePatientDataUtils.getClassName(mpdList);
-			
 			switch (clazz) {
+			
 				case MergePatientDataConstants.PATIENT_RESOURCE_NAME:
-					log.info("Converting to MPD PatientResource");
+					log.debug("Converting to MPD PatientResource");
 					return covertToOpenmrsPatientObjects(mpdList);
 					
 				case MergePatientDataConstants.LOCATION_RESOURCE_NAME:
-					log.info("Converting to MPD LocationResource");
+					log.debug("Converting to MPD LocationResource");
 					return covertToOpenmrsLocationObjects(mpdList);
 					
+				case MergePatientDataConstants.ENCOUNTER_RESOURCE_NAME:
+					return convertToOpenmrsEncounterObjects(mpdList);
 				default:
-					//TODO Should throw a MergePatientDataUnknownTypeExption
 					throw new MPDException("Un Supported Type : " + clazz);
 			}
 		} else {
@@ -97,15 +130,24 @@ public class ObjectUtils {
 	}
 	
 	private static List<org.openmrs.Location> covertToOpenmrsLocationObjects(List<? extends MergeAbleResource> mpdList) {
-		
-		List<org.openmrs.Location> openmrsLocations = new ArrayList<org.openmrs.Location>();
-		
+		List<org.openmrs.Location> openmrsLocations = new ArrayList<>();	
 		for (MergeAbleResource resourceObject : mpdList) {
 			Location location = (Location) resourceObject;
 			org.openmrs.Location openmrsPatient = (org.openmrs.Location) location.getOpenMrsObject();
 			openmrsLocations.add(openmrsPatient);
 		}
 		return openmrsLocations;
+	}
+	
+	private static List<? extends OpenmrsObject> convertToOpenmrsEncounterObjects(
+			List<? extends MergeAbleResource> mpdList) {
+		List<org.openmrs.Encounter> openmrsEncounterObjects = new ArrayList<>();
+		for (MergeAbleResource resourceObject : mpdList) {
+			Encounter enc = (Encounter) resourceObject;
+			org.openmrs.Encounter encounter = (org.openmrs.Encounter) enc.getOpenMrsObject();
+			openmrsEncounterObjects.add(encounter);
+		}
+		return openmrsEncounterObjects;
 	}
 	
 	private static List<org.openmrs.Patient> covertToOpenmrsPatientObjects(List<? extends MergeAbleResource> mpdList) {
@@ -195,11 +237,100 @@ public class ObjectUtils {
 			if (org.openmrs.PatientIdentifier.class.isAssignableFrom(patientIdentifier.getClass())) {
 				org.openmrs.PatientIdentifier openmrsPatId = (org.openmrs.PatientIdentifier) patientIdentifier;
 				Identifier id = new Identifier(openmrsPatId);
-				System.out.println("Identifier : " + id.getIdentifierType().getName());
 				identifiers.add(id);
 			}
 		}
 		return identifiers;
+	}
+	
+	private static List<? extends MergeAbleResource> convertToMPDConcepName(
+			List<? extends OpenmrsObject> openmrsResourceObjects) {
+		List<ConceptName> names = new ArrayList<>();
+		for (OpenmrsObject name : openmrsResourceObjects) {
+			if (org.openmrs.ConceptName.class.isAssignableFrom(name.getClass())) {
+				org.openmrs.ConceptName ocn = (org.openmrs.ConceptName) name;
+				ConceptName mcn = new ConceptName(ocn);
+				names.add(mcn);
+			}
+		}
+		return names;
+	}
+	
+	private static Collection<? extends MergeAbleResource> convertToMpdConceptAnswer(
+			List<? extends OpenmrsObject> openmrsResourceObjects) {
+		List<ConceptAnswer> result = new ArrayList<>();
+		for (OpenmrsObject ans : openmrsResourceObjects) {
+			org.openmrs.ConceptAnswer oAns = (org.openmrs.ConceptAnswer) ans;
+			ConceptAnswer mAns = new ConceptAnswer(oAns);
+			result.add(mAns);
+		}
+		return result;
+	}
+	
+	private static Collection<? extends MergeAbleResource> convertToMpdConceptSet(
+			List<? extends OpenmrsObject> openmrsResourceObjects) {
+		List<ConceptSet> result = new ArrayList<>();
+		for (OpenmrsObject set : openmrsResourceObjects) {
+			org.openmrs.ConceptSet oSet = (org.openmrs.ConceptSet) set;
+			ConceptSet mSet = new ConceptSet(oSet);
+			result.add(mSet);
+		}
+		return result;
+	}
+	
+	private static Collection<? extends MergeAbleResource> convertToMpdConceptAttr(
+			List<? extends OpenmrsObject> openmrsResourceObjects) {
+		List<ConceptAttribute> result = new ArrayList<>();
+		for (OpenmrsObject att : openmrsResourceObjects) {
+			org.openmrs.ConceptAttribute oAtt = (org.openmrs.ConceptAttribute) att;
+			ConceptAttribute mAtt = new ConceptAttribute(oAtt);
+			result.add(mAtt);
+		}
+		return result;
+	}
+	
+	private static Collection<? extends MergeAbleResource> convertToMpdConceptMap(
+			List<? extends OpenmrsObject> openmrsResourceObjects) {
+		Set<ConceptMap> result = new HashSet<>();
+		for (OpenmrsObject map : openmrsResourceObjects) {
+			org.openmrs.ConceptMap oMap = (org.openmrs.ConceptMap) map;
+			ConceptMap mMap = new ConceptMap(oMap);
+			result.add(mMap);
+		}
+		return result;
+	}
+	
+	private static Collection<? extends MergeAbleResource> convertToMpdConceptNameTag(
+			List<? extends OpenmrsObject> openmrsResourceObjects) {
+		List<ConceptNameTag> result = new ArrayList<>();
+		for (OpenmrsObject tag : openmrsResourceObjects) {
+			org.openmrs.ConceptNameTag oTag = (org.openmrs.ConceptNameTag) tag;
+			ConceptNameTag mTag = new ConceptNameTag(oTag);
+			result.add(mTag);
+		}
+		return result;
+	}
+	
+	private static Collection<? extends MergeAbleResource> convertToMpdConceptDesc(
+			List<? extends OpenmrsObject> openmrsResourceObjects) {
+		List<ConceptDescription> descriptions = new ArrayList<>();
+		for (OpenmrsObject description : openmrsResourceObjects) {
+			org.openmrs.ConceptDescription desc = (org.openmrs.ConceptDescription) description;
+			ConceptDescription mpdDesc = new ConceptDescription(desc);
+			descriptions.add(mpdDesc);
+		}
+		return descriptions;
+	}
+	
+	private static Collection<? extends MergeAbleResource> convertToMpdEncounter(
+			List<? extends OpenmrsObject> openmrsResourceObjects) {
+		List<Encounter> encounters = new ArrayList<>();
+		for (OpenmrsObject encounter : openmrsResourceObjects) {
+			org.openmrs.Encounter enc = (org.openmrs.Encounter) encounter;
+			Encounter mpdEnc = new Encounter(enc, true);
+			encounters.add(mpdEnc);
+		}
+		return encounters;
 	}
 	
 	private static List<? extends MergeAbleResource> convertToMPDLocationTag(
@@ -213,7 +344,6 @@ public class ObjectUtils {
 				tags.add(mpdTag);
 			}
 		}
-		
 		return tags;
 	}
 	
@@ -234,4 +364,32 @@ public class ObjectUtils {
 		return required;
 	}
 	
+	public static void addItemsToListWithoutDuplication(List<Encounter> listToAddItems, List<Encounter> sourceOfItems) {
+		if (listToAddItems == null || sourceOfItems == null) {
+			return;
+		}
+		List<Encounter> itemsToBeAdded;
+		for (Encounter nextObjectToAdd : sourceOfItems) {
+			if (nextObjectToAdd != null) {
+				if (listToAddItems.size() > 0) {
+					itemsToBeAdded = new ArrayList<>();
+					for (Encounter alreadyAddedItem : listToAddItems) {
+						if (alreadyAddedItem.getUuid().equals(nextObjectToAdd.getUuid()) && alreadyAddedItem.getId().equals(nextObjectToAdd.getId())) {
+							continue;
+						} else {
+							itemsToBeAdded.add(nextObjectToAdd);
+						}
+					}
+					if (itemsToBeAdded != null) {
+						for (Encounter item : itemsToBeAdded) {
+							listToAddItems.add(item);
+						}
+						itemsToBeAdded = null;
+					}
+				} else {
+					listToAddItems.add(nextObjectToAdd);
+				}
+			}
+		}
+	}
 }

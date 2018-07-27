@@ -24,8 +24,6 @@ public class MergePatientDataConstants {
 	
 	public static final String TRANSFORMATION = "AES";
 	
-	public static final String KEY = "@Jls*#1072Lvq13k";
-	
 	public static final String CONFIG_FILE_NAME = "config.json";
 	
 	public static final String DEFAULT_CONFIG_FILE_NAME = "defaultMPDConfiguration.json";
@@ -37,4 +35,20 @@ public class MergePatientDataConstants {
 	public static final String LOCATION_TAG_RESOURCE_NAME = "LocationTag";
 	
 	public static final String THIS_INSTANCE_NAME = "This Instance";
+	
+	public static final String CONCEPTNAME_RESOURCE_NAME = "ConceptName";
+	
+	public static final String CONCEPTANSWER_RESOURCE_NAME = "ConceptAnswer";
+	
+	public static final String CONCEPTSET_RESOURCE_NAME = "ConceptSet";
+	
+	public static final String CONCEPTDESCRIPTION_RESOURCE_NAME = "ConceptDescription";
+	
+	public static final String CONCEPTMAP_RESOURCE_NAME = "ConceptMap";
+	
+	public static final String CONCEPTATTR_RESOURCE_NAME = "ConceptAttribute";
+	
+	public static final String CONCEPTNAMETAG_RESOURCE_NAME = "ConceptNameTag";
+	
+	public static final String ENCOUNTER_RESOURCE_NAME = "Encounter";
 }

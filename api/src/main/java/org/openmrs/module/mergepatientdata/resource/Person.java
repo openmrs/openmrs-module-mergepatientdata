@@ -3,13 +3,19 @@ package org.openmrs.module.mergepatientdata.resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Concept;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 
-public class Person {
+public class Person extends BaseOpenmrsMetadata implements MergeAbleResource {
 	
-	private String uuid;
+	private static final long serialVersionUID = 1L;
+	
+	private Integer personId;
 	
 	private PersonName preferredName;
 	
@@ -45,12 +51,19 @@ public class Person {
 	
 	@SuppressWarnings("unchecked")
 	public Person(org.openmrs.Person openmrsPerson) {
-		this.uuid = openmrsPerson.getUuid();
+		this.personId = openmrsPerson.getId();
+		this.setDateChanged(openmrsPerson.getDateChanged());
+		this.setDateCreated(openmrsPerson.getDateCreated());
+		this.setUuid(openmrsPerson.getUuid());
 		this.preferredName = new PersonName(openmrsPerson.getPersonName());
-		this.addresses = (List<PersonAddress>) ObjectUtils.getMPDResourceObjectsFromOpenmrsResourceObjects(openmrsPerson
-		        .getAddresses());
-		this.names = (List<PersonName>) ObjectUtils
-		        .getMPDResourceObjectsFromOpenmrsResourceObjects(openmrsPerson.getNames());
+		if (openmrsPerson.getAddresses() != null && !openmrsPerson.getAddresses().isEmpty()) {
+			this.addresses = (List<PersonAddress>) ObjectUtils.getMPDResourceObjectsFromOpenmrsResourceObjects(openmrsPerson
+			        .getAddresses());
+		}
+		if (openmrsPerson.getNames() != null && !openmrsPerson.getNames().isEmpty()) {
+			this.names = (List<PersonName>) ObjectUtils.getMPDResourceObjectsFromOpenmrsResourceObjects(openmrsPerson
+			        .getNames());
+		}
 		this.birthdate = openmrsPerson.getBirthdate();
 		this.birthdateEstimated = openmrsPerson.getBirthdateEstimated();
 		this.age = openmrsPerson.getAge();
@@ -63,12 +76,41 @@ public class Person {
 		this.birthdate = openmrsPerson.getBirthdate();
 	}
 	
-	public String getUuid() {
-		return uuid;
-	}
-	
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
+	@Override
+	public BaseOpenmrsObject getOpenMrsObject() {
+		org.openmrs.Person openmrsPerson = new org.openmrs.Person();
+		openmrsPerson.setPersonId(this.personId);
+		openmrsPerson.setUuid(getUuid());
+		openmrsPerson.setDateChanged(getDateChanged());
+		openmrsPerson.setDateCreated(getDateCreated());
+		Set<org.openmrs.PersonName> names = new TreeSet<>();
+		org.openmrs.PersonName openmrsPeferredName = this.preferredName != null ? (org.openmrs.PersonName) preferredName.getOpenMrsObject() : null;
+		names.add(openmrsPeferredName);
+		if (this.names != null) {
+			for (PersonName mpdPersonName : this.names) {
+				org.openmrs.PersonName openmrsPersonName = (org.openmrs.PersonName) mpdPersonName.getOpenMrsObject();
+				names.add(openmrsPersonName);
+			}
+		}
+		openmrsPerson.setNames(names);	
+		if (this.addresses != null && !this.addresses.isEmpty()) {
+			Set<org.openmrs.PersonAddress> addresses = new TreeSet<>();
+			for (PersonAddress add : this.addresses) {
+				org.openmrs.PersonAddress address = (org.openmrs.PersonAddress) add.getOpenMrsObject();
+				addresses.add(address);
+			}
+			openmrsPerson.setAddresses(addresses);
+		}
+		openmrsPerson.setBirthdate(birthdate);
+		openmrsPerson.setBirthdateEstimated(birthdateEstimated);
+		openmrsPerson.setGender(gender);
+		openmrsPerson.setDead(dead);
+		openmrsPerson.setCauseOfDeath(causeOfDeath);
+		openmrsPerson.setDeathDate(deathDate);
+		openmrsPerson.setVoided(voided);
+		openmrsPerson.setBirthdate(birthdate);
+		openmrsPerson.setDeathdateEstimated(deathdateEstimated);
+		return openmrsPerson;
 	}
 	
 	public PersonName getPreferredName() {
@@ -193,7 +235,7 @@ public class Person {
 		}
 		
 		Person person = (Person) o;
-		return Objects.equals(uuid, person.uuid) && Objects.equals(preferredName, person.preferredName)
+		return Objects.equals(preferredName, person.preferredName)
 		        && Objects.equals(preferredAddress, person.preferredAddress) && Objects.equals(names, person.names)
 		        && Objects.equals(addresses, person.addresses)
 		        && Objects.equals(birthdateEstimated, person.birthdateEstimated) && Objects.equals(age, person.age)
@@ -204,8 +246,26 @@ public class Person {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(uuid, preferredName, preferredAddress, names, addresses, birthdateEstimated, age, gender, dead,
+		return Objects.hash(preferredName, preferredAddress, names, addresses, birthdateEstimated, age, gender, dead,
 		    causeOfDeath, deathDate, voided, deathdateEstimated);
+	}
+	
+	public Integer getPersonId() {
+		return personId;
+	}
+	
+	public void setPersonId(Integer personId) {
+		this.personId = personId;
+	}
+	
+	@Override
+	public Integer getId() {
+		return null;
+	}
+	
+	@Override
+	public void setId(Integer id) {
+		//this.personId = id;
 	}
 	
 }

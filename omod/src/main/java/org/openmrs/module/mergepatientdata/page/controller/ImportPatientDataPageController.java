@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpSession;
 
 import org.openmrs.module.mergepatientdata.api.MergePatientDataConfigurationService;
+import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
 import org.openmrs.module.mergepatientdata.api.impl.MergePatientDataConfigurationServiceImpl;
 import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage;
 import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataConfigurationUtils;
@@ -52,10 +53,11 @@ public class ImportPatientDataPageController {
 		try {
 			auditor = client.importData(configService.getMPDConfiguration(), new File(encryptedFile.getAbsolutePath()));
 		}
-		catch (Exception e) {
+		catch (MPDException e) {
 			log.error(e.getMessage());
 			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(OPERATION_FAILURE));
 		}
+		
 		if (auditor != null) {
 			if (!auditor.isHasErrors() && auditor.getStatus().equals(Status.Success)) {
 				InfoErrorMessageUtil.flashInfoMessage(session, ui.message(OPERATION_SUCCESS));
