@@ -91,7 +91,7 @@ public class PatientResourceServiceTest extends BaseModuleContextSensitiveTest {
 		Set<Patient> openmrsPatients = new HashSet<>();
 		openmrsPatients.add(patient);
 		List<org.openmrs.module.mergepatientdata.resource.Patient> patients = (List<org.openmrs.module.mergepatientdata.resource.Patient>) ObjectUtils.getMPDResourceObjectsFromOpenmrsResourceObjects( openmrsPatients);
-		service.savePatients(patients, auditor);
+		service.savePatients(patients, auditor, new ArrayList<>());
 		Assert.assertEquals(5, Context.getPatientService().getAllPatients().size());
 	}
 }

@@ -31,10 +31,7 @@ public class MergePatientDataImportServiceImpl implements MergePatientDataImport
 		MPDStore mergeableData = encryptionService.deserialize(serializedFile);
 		auditor.setOrigin(mergeableData.getOriginId());
 		log.debug("Importing data from " + mergeableData.getOriginId());
-		List<MergeAbleDataCategory> types = mergeableData.getTypes();
-		for (MergeAbleDataCategory type : types) {
-			MergePatientDataUtils.mergeResourceToOpenmrsDataBase(mergeableData, type, resourceTypesToImport, auditor);
-		}
+		MergePatientDataUtils.mergeResourceToOpenmrsDataBase(mergeableData, resourceTypesToImport, auditor);
 		if (!auditor.isHasErrors()) {
 			auditor.setStatus(Status.Success);
 		} else {

@@ -47,6 +47,10 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 		String filePath = MergePatientDataEncryptionUtils.getSerializedFilePath();
 		Gson gson = new Gson();
 		log.info("Serializing to '" + filePath + "'");
+		
+		// Stop gson from storing bytes in runtime memory
+		// This causes out of memory problems
+		// TODO should resort something like streaming @see https://sites.google.com/site/gson/streaming
 		byte[] bytes = gson.toJson(store).getBytes();
 		File inputfile = new File(filePath);
 		

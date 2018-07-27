@@ -7,6 +7,8 @@ import org.openmrs.User;
 
 public class PersonName implements MergeAbleResource {
 	
+	private Integer id;
+	
 	private String uuid;
 	
 	private String givenName;
@@ -20,6 +22,10 @@ public class PersonName implements MergeAbleResource {
 	private boolean voided;
 	
 	public PersonName(org.openmrs.PersonName openmrsName) {
+		if (openmrsName == null) {
+			return;
+		}
+		this.id = openmrsName.getId();
 		this.uuid = openmrsName.getUuid();
 		this.givenName = openmrsName.getGivenName();
 		this.middleName = openmrsName.getMiddleName();
@@ -32,6 +38,7 @@ public class PersonName implements MergeAbleResource {
 	@Override
 	public BaseOpenmrsObject getOpenMrsObject() {
 		org.openmrs.PersonName personName = new org.openmrs.PersonName();
+		personName.setId(id);
 		personName.setUuid(uuid);
 		personName.setGivenName(givenName);
 		personName.setMiddleName(middleName);
@@ -87,6 +94,14 @@ public class PersonName implements MergeAbleResource {
 	
 	public void setVoided(boolean voided) {
 		this.voided = voided;
+	}
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 	@Override

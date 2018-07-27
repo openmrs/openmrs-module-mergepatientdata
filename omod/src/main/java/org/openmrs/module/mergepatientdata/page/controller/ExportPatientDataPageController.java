@@ -11,6 +11,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.openmrs.module.mergepatientdata.api.MergePatientDataConfigurationService;
 import org.openmrs.module.mergepatientdata.api.exceptions.MPDException;
 import org.openmrs.module.mergepatientdata.api.impl.MergePatientDataConfigurationServiceImpl;
 import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataConfigurationUtils;
@@ -33,9 +34,7 @@ public class ExportPatientDataPageController {
 	
 	public String controller(@SpringBean("mpdcient") MPDClient client, HttpServletResponse response, HttpSession session,
 	        UiUtils ui) {
-		MergePatientDataConfigurationServiceImpl configService = new MergePatientDataConfigurationServiceImpl();
-		configService.generateConfiguration();
-		
+		MergePatientDataConfigurationService configService = new MergePatientDataConfigurationServiceImpl();
 		File encryptedFile = client.exportData(configService.getMPDConfiguration());
 		
 		if (encryptedFile != null) {

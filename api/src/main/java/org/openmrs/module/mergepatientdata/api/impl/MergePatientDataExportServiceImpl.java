@@ -18,11 +18,11 @@ import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 import org.openmrs.module.mergepatientdata.enums.MergeAbleDataCategory;
 import org.openmrs.module.mergepatientdata.enums.Status;
+import org.openmrs.module.mergepatientdata.resource.Encounter;
 import org.openmrs.module.mergepatientdata.resource.Patient;
 import org.openmrs.module.mergepatientdata.sync.MPDStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class MergePatientDataExportServiceImpl implements MergePatientDataExportService {
 	
@@ -45,8 +45,7 @@ public class MergePatientDataExportServiceImpl implements MergePatientDataExport
 			if (resource.isAssignableFrom(Patient.class)) {
 				store.addType(MergeAbleDataCategory.PATIENT);
 				PatientResourceService patientResourceService = new PatientResourceServiceImpl();
-				Set<org.openmrs.Patient> openmrsPatients = new HashSet(patientResourceService.getAllPatients());
-				
+				Set<org.openmrs.Patient> openmrsPatients = new HashSet<>(patientResourceService.getAllPatients());	
 				try {
 					resourceMapCounter = resourceMapCounter == null ? new HashMap<>() : resourceMapCounter;
 					List<Patient> patients = (List<Patient>) ObjectUtils
@@ -58,15 +57,42 @@ public class MergePatientDataExportServiceImpl implements MergePatientDataExport
 					log.error(e.getMessage());
 					auditor.getFailureDetails().add(e.getMessage());
 				}
-				continue; //Just continue
-			}	
-			//TODO :- Cater for other Resources
+				continue; 
+			}
+			if (resource.isAssignableFrom(Encounter.class)) {
+				store.addType(MergeAbleDataCategory.ENCOUNTER);
+				auditor.getResources().add(Encounter.class.getSimpleName());
+				// Check whether we have Patients
+				if (store.getPatients() != null) {
+					store.setEncounters(new ArrayList<>());
+					List<Patient> patientsWhoseEncountersAreRequired = store.getPatients();
+					for (Patient pat : patientsWhoseEncountersAreRequired) {
+						List<org.openmrs.Encounter> encounters = Context.getEncounterService().
+								getEncountersByPatientIdentifier(pat.getPatientIdentifier().getIdentifier());
+						try {
+							// If Patient has Encounters
+							if (encounters != null) {
+								List<Encounter> mpdEncounters = (List<Encounter>) ObjectUtils.
+										getMPDResourceObjectsFromOpenmrsResourceObjects(new HashSet<>(encounters));
+								// Add Encounters but not including duplicates
+								ObjectUtils.addItemsToListWithoutDuplication(store.getEncounters(), mpdEncounters);
+							}
+						} catch (MPDException e) {
+							log.error(e.getMessage());
+							auditor.getFailureDetails().add(e.getMessage());
+						}
+					}
+				} else {
+					auditor.getFailureDetails().add("Patient Resource Required to Export Encounter Resource");
+					auditor.setStatus(Status.Failure);
+				}
+			} 
 		}
 		if (store.hastData()) {
 			File serializedData = encryptionService.serialize(store);
 			return encryptionService.encrypt(serializedData, auditor);	
 		} else {
-			//Required data not found
+			// Required data not found
 			auditor.getFailureDetails().add("Required data not found!");
 			auditor.setStatus(Status.Failure);
 		}

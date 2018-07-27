@@ -7,6 +7,8 @@ import org.openmrs.PatientIdentifierType;
 
 public class Identifier implements MergeAbleResource {
 	
+	private Integer id;
+	
 	private String uuid;
 	
 	private String identifier;
@@ -19,19 +21,23 @@ public class Identifier implements MergeAbleResource {
 	
 	private Boolean voided;
 	
+	private Patient patient;
+	
 	public Identifier(org.openmrs.PatientIdentifier openmrPatientIdentifier) {
+		this.id = openmrPatientIdentifier.getId();
 		this.uuid = openmrPatientIdentifier.getUuid();
 		this.identifier = openmrPatientIdentifier.getIdentifier();
 		this.identifierType = new IdentifierType(openmrPatientIdentifier.getIdentifierType());
 		this.location = new Location(openmrPatientIdentifier.getLocation(), true);
 		this.preferred = openmrPatientIdentifier.getPreferred();
 		this.voided = openmrPatientIdentifier.getVoided();
-		
+		this.patient = createMpdIdentifierTypePatient(openmrPatientIdentifier.getPatient());
 	}
 	
 	@Override
 	public BaseOpenmrsObject getOpenMrsObject() {
 		org.openmrs.PatientIdentifier patientIdentifier = new org.openmrs.PatientIdentifier();
+		patientIdentifier.setId(id);
 		patientIdentifier.setUuid(this.uuid);
 		patientIdentifier.setIdentifier(this.identifier);
 		if (identifierType != null) {
@@ -42,7 +48,7 @@ public class Identifier implements MergeAbleResource {
 		}
 		patientIdentifier.setPreferred(this.preferred);
 		patientIdentifier.setVoided(this.voided);
-		
+		patientIdentifier.setPatient(createOpenmrsIdentifierTypePatient(this.patient));
 		return patientIdentifier;
 	}
 	
@@ -92,6 +98,44 @@ public class Identifier implements MergeAbleResource {
 	
 	public void setVoided(Boolean voided) {
 		this.voided = voided;
+	}
+	
+	public Patient getPatient() {
+		return patient;
+	}
+	
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+	
+	private Patient createMpdIdentifierTypePatient(org.openmrs.Patient patient) {
+		if (patient == null) {
+			return null;
+		}
+		Patient pat = new Patient();
+		pat.setId(patient.getId());
+		pat.setUuid(patient.getUuid());
+		pat.setDateCreated(patient.getDateCreated());
+		return pat;
+	}
+	
+	private org.openmrs.Patient createOpenmrsIdentifierTypePatient(Patient patient) {
+		if (patient == null) {
+			return null;
+		}
+		org.openmrs.Patient pat = new org.openmrs.Patient();
+		pat.setId(patient.getId());
+		pat.setUuid(patient.getUuid());
+		pat.setDateCreated(patient.getDateCreated());
+		return pat;
+	}
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 	@Override
