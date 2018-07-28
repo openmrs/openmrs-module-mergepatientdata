@@ -91,7 +91,6 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 			MergePatientDataConfigurationUtils.cleanMPDWorkDir();
 		}
 		return store;
-		
 	}
 	
 	@Override
