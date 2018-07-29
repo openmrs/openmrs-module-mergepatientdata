@@ -35,6 +35,7 @@ import org.openmrs.module.mergepatientdata.sync.MPDStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEncryptionService {
 	
@@ -45,24 +46,20 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 	@Override
 	public File serialize(MPDStore store) {
 		String filePath = MergePatientDataEncryptionUtils.getSerializedFilePath();
-		Gson gson = new Gson();
 		log.info("Serializing to '" + filePath + "'");
 		
 		// Stop gson from storing bytes in runtime memory
 		// This causes out of memory problems
 		// TODO should resort something like streaming @see https://sites.google.com/site/gson/streaming
-		byte[] bytes = gson.toJson(store).getBytes();
+		//byte[] bytes = gson.toJson(store).getBytes();
 		File inputfile = new File(filePath);
 		
 		try {
 			FileWriter writer = new FileWriter(inputfile);
-			BufferedWriter bwriter = new BufferedWriter(writer);
+			//BufferedWriter bwriter = new BufferedWriter(writer);
+			Gson gson = new GsonBuilder().create();
+			gson.toJson(store, writer);
 			
-			for (int i = 0; i < bytes.length; i++) {
-				bwriter.write(bytes[i]);
-			}
-			log.info("serialized data");
-			bwriter.close();
 			writer.close();
 		}
 		catch (IOException e) {
