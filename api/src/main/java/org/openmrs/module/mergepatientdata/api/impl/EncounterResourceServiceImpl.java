@@ -46,7 +46,8 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 			if (encounter.getId() != null) {
 				org.openmrs.Encounter enc = Context.getEncounterService().getEncounterByUuid(encounter.getUuid());
 				if (enc != null) {
-					if (enc.getUuid().equals(encounter.getUuid())) {
+					if (encounter.getPatient().getId() == enc.getPatient().getId()) {
+						System.out.println("An Encounter for found existing for patiet " + enc.getPatient().getGivenName());
 						// Clear the Session to make the update possible
 						Context.clearSession();
 						// Mean while, don't update, just continue
@@ -67,6 +68,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 	}
 	
 	private org.openmrs.Encounter inspectEncounterPropertiesAndModifyIfRequired(org.openmrs.Encounter enc) {
+		System.out.println("Creating an encounter for patient " + enc.getPatient().getId());
 		// Update Location Resource
 		Location location = enc.getLocation();
 		Integer oldLocationId;

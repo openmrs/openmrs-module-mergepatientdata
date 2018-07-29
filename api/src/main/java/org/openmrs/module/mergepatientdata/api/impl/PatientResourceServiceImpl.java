@@ -39,7 +39,6 @@ public class PatientResourceServiceImpl extends BaseOpenmrsService implements Pa
 				Context.clearSession();
 				Context.closeSessionWithCurrentUser();
 				// Update Existing Patient
-				//return Context.getPatientService().savePatient(patient);
 				// For now we aren't updating the patient
 				return exitingPatient;
 			} else {

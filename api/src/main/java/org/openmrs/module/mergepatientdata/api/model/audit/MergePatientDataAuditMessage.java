@@ -122,7 +122,6 @@ public class MergePatientDataAuditMessage extends BaseOpenmrsData {
 		
 		@Override
 		public JsonElement serialize(MergePatientDataAuditMessage src, Type type, JsonSerializationContext context) {
-			System.out.println("Tring to serialize, origing is: " + src.origin);
 			JsonObject object = new JsonObject();
 			DateFormat formatter = new SimpleDateFormat(date_Format);
 			object.addProperty("uuid", src.getUuid());
