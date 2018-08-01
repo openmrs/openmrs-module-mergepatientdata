@@ -13,62 +13,97 @@ import org.openmrs.Obs;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mergepatientdata.api.EncounterResourceService;
+import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 import org.openmrs.module.mergepatientdata.resource.Encounter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EncounterResourceServiceImpl implements EncounterResourceService {
+	
+	private final static Logger log = LoggerFactory.getLogger(EncounterResourceServiceImpl.class);
 	
 	public EncounterResourceServiceImpl() {
 	}
 	
 	@Override
-	public org.openmrs.Encounter saveEncounter(org.openmrs.Encounter encounter) {
+	public org.openmrs.Encounter saveEncounter(org.openmrs.Encounter encounter, PaginatedAuditMessage auditor) {
 		if (encounter == null) {
 			return null;
 		}
-		return Context.getEncounterService().saveEncounter(encounter);
+		try {
+			return Context.getEncounterService().saveEncounter(encounter);
+		}
+		catch (org.openmrs.api.ValidationException e) {
+			log.error("Tried to merge an invalid Encounter, {}", e.getMessage());
+			auditor.setHasErrors(true);
+			auditor.getFailureDetails().add(
+			    "Failed to Merge 'Encounter' of patient "
+			            + Context.getPatientService().getPatient(encounter.getPatient().getId()).getGivenName()
+			            + "' rationale: " + e.getMessage());
+		}
+		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void saveEncounters(List<Encounter> list) {
+	public void saveEncounters(List<Encounter> list, PaginatedAuditMessage auditor) {
+		
 		if (list != null && list.isEmpty()) {
 			return;
 		}
+		
 		List<org.openmrs.Encounter> encounters = (List<org.openmrs.Encounter>) ObjectUtils
 		        .getOpenmrsResourceObjectsFromMPDResourceObjects(list);
+		
+		int counter = 0;
+		
 		for (org.openmrs.Encounter encounter : encounters) {
-			
 			// We are currently not supporting visits
 			encounter.setVisit(null);
-			
 			// Check whether Encounter is new
 			if (encounter.getId() != null) {
 				org.openmrs.Encounter enc = Context.getEncounterService().getEncounterByUuid(encounter.getUuid());
 				if (enc != null) {
+					System.out.println("Existing Encounter's patient Id " + enc.getPatient().getId());
+					System.out.println("New Encounter's patient Id " + encounter.getPatient().getId());
 					if (encounter.getPatient().getId() == enc.getPatient().getId()) {
-						System.out.println("An Encounter for found existing for patiet " + enc.getPatient().getGivenName());
 						// Clear the Session to make the update possible
+						System.out.println("Encounter found existing");
 						Context.clearSession();
 						// Mean while, don't update, just continue
 						continue;
 					} else {
-						// Note: this changes original Id. Hence affecting referencing data like OBS. 
-						// Update the Obs
+						// This means that this Encounter already exists but was assigned to a wrong Patient
+						// TODO Implement something better to solve this
+						// Lets void this Encounter found
+						enc.setVoided(true);
+						enc.setVoidReason("This Encounter was assigned to a wrong Patient During Transer");
+						Context.getEncounterService().saveEncounter(enc);
+						System.out.println("Taking updating measures ...");
+						// Lets Do the actual update
 						encounter.setId(null);
+						encounter.setUuid(null);
+						//Context.getEncounterService().purgeEncounter(enc);
 						inspectEncounterPropertiesAndModifyIfRequired(encounter);
+						System.out.println("Upated an Encounter to " + encounter.getPatient().getGivenName());
+						System.out.println(Context.getEncounterService().getEncounter(enc.getId()));
 					}
 				} else {
 					encounter.setId(null);
 					inspectEncounterPropertiesAndModifyIfRequired(encounter);
 				}
 			}
-			saveEncounter(encounter);
+			org.openmrs.Encounter savedEncounter = saveEncounter(encounter, auditor);
+			if (savedEncounter != null) {
+				counter++;
+			}
 		}
+		auditor.getResourceCount().put("Encounter", counter);
 	}
 	
 	private org.openmrs.Encounter inspectEncounterPropertiesAndModifyIfRequired(org.openmrs.Encounter enc) {
-		System.out.println("Creating an encounter for patient " + enc.getPatient().getId());
+		System.out.println("Creating an encounter for patient " + enc.getPatient().getId() + " with uuid " + enc.getUuid());
 		// Update Location Resource
 		Location location = enc.getLocation();
 		Integer oldLocationId;
@@ -155,14 +190,22 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 		enc.setObs(null);
 		enc = Context.getEncounterService().saveEncounter(enc);
 		for (Obs obs : observations) {
+			
+			obs.setPerson(enc.getPatient());
+			
 			obs.setEncounter(new org.openmrs.Encounter(enc.getId()));
 			// Checkout whether this obs is already existing
 			if (obs.getId() != null) {
 				Obs existingObs = Context.getObsService().getObsByUuid(obs.getUuid());
 				if (existingObs != null) {
 					// Prove that its really existing
+					// TODO this is quite to compare using uuids again
 					if (existingObs.getUuid().equals(obs.getUuid())) {
-						obs = existingObs;
+						//obs = existingObs;
+						obs.setUuid(null);
+						inspectObsPropertiesAndModifyIfRequired(obs, enc);
+						//obs.setPerson(enc.getPatient());
+						
 					} else {
 						inspectObsPropertiesAndModifyIfRequired(obs, enc);
 					}

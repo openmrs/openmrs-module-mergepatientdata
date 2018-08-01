@@ -51,14 +51,10 @@ public class ExportPatientDataPageController {
 				outPutStream.close();
 				inputStream.close();
 				MergePatientDataConfigurationUtils.cleanMPDWorkDir();
-				InfoErrorMessageUtil.flashInfoMessage(session, ui.message(OPERATION_SUCCESS));
 			}
 			catch (IOException e) {
 				log.error(e.getMessage());
-				InfoErrorMessageUtil.flashErrorMessage(session, ui.message(OPERATION_FAILURE));
 			}
-		} else {
-			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(OPERATION_FAILURE));
 		}
 		
 		return "redirect:/mergepatientdata/mergepatientdata.page";

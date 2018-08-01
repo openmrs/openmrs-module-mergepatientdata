@@ -35,7 +35,7 @@ public class Person extends BaseOpenmrsMetadata implements MergeAbleResource {
 	
 	private Boolean dead;
 	
-	private Concept causeOfDeath;
+	private Concept causeOfDeath; // Take care of this field. It could cause Hibernate proxy issues
 	
 	private Date deathDate;
 	

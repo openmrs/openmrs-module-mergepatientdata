@@ -78,7 +78,7 @@ public class Location implements MergeAbleResource {
 	 * @param primaryMetaData If false @Field parentLocation & childLocations will set to null.It
 	 *            prevents {@link java.lang.StackOverflowError} Exception.
 	 */
-	public Location(org.openmrs.Location openmrsLocation, Boolean primaryMetaData) {
+	public Location(org.openmrs.Location openmrsLocation, Boolean initializeMoreMetaData) {
 		this.id = openmrsLocation.getId();
 		this.uuid = openmrsLocation.getUuid();
 		this.description = openmrsLocation.getDescription();
@@ -116,7 +116,8 @@ public class Location implements MergeAbleResource {
 		this.address14 = openmrsLocation.getAddress14();
 		this.address15 = openmrsLocation.getAddress15();
 		
-		if ((openmrsLocation.getParentLocation() != null || openmrsLocation.getChildLocations() != null) && primaryMetaData) {
+		if ((openmrsLocation.getParentLocation() != null || openmrsLocation.getChildLocations() != null)
+		        && initializeMoreMetaData) {
 			initializeMoreMetaData(this, openmrsLocation);
 		}
 	}

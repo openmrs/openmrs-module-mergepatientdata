@@ -44,17 +44,19 @@
             <th class="label"> ${ ui.message('mergepatientdata.refApp.origin.name') } </th>
             <td> ${audit.origin} </td>
         </tr>
-        <tr>
-         <th class="label"> ${ ui.message('mergepatientdata.refApp.audit.resources.label') } </th>
          <% if (resourceCounter) {%>
                 <% resourceCounter.each { %>
-                  <td> <% println it.value + "  " + it.key + "(s)" %> </td>
-                <% } %>  
-          <% } else { %> 
-                <td> ${ ui.message('mergepatientdata.refApp.audit.no.resources.label') } </td>
+        	<tr>
+         		<th class="label"> ${ ui.message('mergepatientdata.refApp.audit.resources.label') } </th>
+         			<td> <% println it.value + "  " + it.key + "(s)" %> </td>
+            </tr>
           <% } %>
-        </tr>
-     <% } %>  
+        <% } else { %>
+        	<tr>
+        		<th class="label"> ${ ui.message('mergepatientdata.refApp.audit.resources.label') } </th>
+                	<td> ${ ui.message('mergepatientdata.refApp.audit.no.resources.label') } </td>
+        <% } %>
+    <% } %>  
 </table>
 <% if (hasErrors) { %>
    <br/>

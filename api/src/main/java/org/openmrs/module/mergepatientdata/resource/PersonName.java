@@ -25,7 +25,7 @@ public class PersonName implements MergeAbleResource {
 		if (openmrsName == null) {
 			return;
 		}
-		this.id = openmrsName.getId();
+		//this.id = openmrsName.getId();
 		this.uuid = openmrsName.getUuid();
 		this.givenName = openmrsName.getGivenName();
 		this.middleName = openmrsName.getMiddleName();
@@ -38,7 +38,7 @@ public class PersonName implements MergeAbleResource {
 	@Override
 	public BaseOpenmrsObject getOpenMrsObject() {
 		org.openmrs.PersonName personName = new org.openmrs.PersonName();
-		personName.setId(id);
+		//personName.setId(id);
 		personName.setUuid(uuid);
 		personName.setGivenName(givenName);
 		personName.setMiddleName(middleName);

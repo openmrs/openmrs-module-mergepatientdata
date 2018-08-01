@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
 import org.openmrs.api.EncounterService;
@@ -84,6 +84,8 @@ public class MergePatientDataUtilsTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
+	// Disabled updating encounters for now
+	@Ignore
 	public void mergeResourceToOpenmrsDataBase_shouldUpdateExistingEncounter() {
 		typesToImport.add(Encounter.class);
 		store.getTypes().add(MergeAbleDataCategory.ENCOUNTER);
@@ -101,8 +103,7 @@ public class MergePatientDataUtilsTest extends BaseModuleContextSensitiveTest {
 		Location loc2 = new Location();
 		loc2.setId(2);
 		Date d2 = new Date();
-		Patient pat2 = new Patient();
-		pat2.setId(2);
+		Patient pat2 = new Patient(Context.getPatientService().getPatient(2));
 		
 		encounter.setLocation(loc2);
 		encounter.setEncounterDatetime(d2);
@@ -207,6 +208,27 @@ public class MergePatientDataUtilsTest extends BaseModuleContextSensitiveTest {
 			assertEquals(obsConcept.getId(), concept.getId());
 			assertEquals(obsConcept.getDatatype(), concept.getDatatype());
 		}
+		
+	}
+	
+	@Test
+	public void mergeResourceToOpenmrsDataBase_shouldHandleConflictingEncounters() {
+		typesToImport.add(Encounter.class);
+		store.getTypes().add(MergeAbleDataCategory.ENCOUNTER);
+		Encounter newEnc = buildEncounter();
+		newEnc.setId(97);
+		// Make a conflict on uuid
+		newEnc.setUuid(Context.getEncounterService().getEncounter(3).getUuid());
+		Obs obs = buildObs();
+		obs.setEncounter(newEnc);
+		Set<Obs> obsz = new HashSet<>();
+		obsz.add(obs);
+		newEnc.setObs(obsz);
+		
+		store.setEncounters(new ArrayList<>());
+		store.getEncounters().add(newEnc);
+		
+		MergePatientDataUtils.mergeResourceToOpenmrsDataBase(store, typesToImport, auditor);
 		
 	}
 	
