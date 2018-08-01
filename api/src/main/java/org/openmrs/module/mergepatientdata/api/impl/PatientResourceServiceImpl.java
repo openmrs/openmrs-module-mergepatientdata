@@ -27,24 +27,24 @@ public class PatientResourceServiceImpl extends BaseOpenmrsService implements Pa
 	@Override
 	public Patient savePatient(Patient patient, PaginatedAuditMessage auditor) throws APIException {
 		try {
-			// TODO:- Update depending Metadata like Encounters
 			Patient exitingPatient = null;
 			if (patient.getUuid() != null) {
 				exitingPatient = Context.getPatientService().getPatientByUuid(patient.getUuid());
+				if (exitingPatient != null
+				        && patient.getPatientIdentifier().getIdentifier()
+				                .equals(exitingPatient.getPatientIdentifier().getIdentifier())) {
+					Context.clearSession();
+					Context.closeSessionWithCurrentUser();
+					// Update Existing Patient
+					// For now we aren't updating the patient
+					return exitingPatient;
+				} else {
+					Context.clearSession();
+					return Context.getPatientService()
+					        .savePatient(inspectPatientPropertiesAndModifyThemAccordingly(patient));
+				}
 			}
-			if (exitingPatient != null
-			        && patient.getUuid().equals(exitingPatient.getUuid())
-			        && patient.getPatientIdentifier().getIdentifier()
-			                .equals(exitingPatient.getPatientIdentifier().getIdentifier())) {
-				Context.clearSession();
-				Context.closeSessionWithCurrentUser();
-				// Update Existing Patient
-				// For now we aren't updating the patient
-				return exitingPatient;
-			} else {
-				
-				return Context.getPatientService().savePatient(inspectPatientPropertiesAndModifyThemAccordingly(patient));
-			}
+			
 		}
 		catch (org.openmrs.api.ValidationException e) {
 			// Tried to save an invalid Patient
@@ -58,26 +58,27 @@ public class PatientResourceServiceImpl extends BaseOpenmrsService implements Pa
 		
 	}
 	
-	private void updateEncountersOfTheIdentifiersIfRequired(Integer oldId, Integer newId, List<Encounter> encounters) {
+	private void updateEncountersOfTheIdentifiersIfRequired(Integer oldId, Patient updatedPatient, List<Encounter> encounters) {
 		if (encounters == null) {
 			return;
 		}
 		for (Encounter enc : encounters) {
-			if (enc.getPatient().getId() == oldId) {
-				enc.getPatient().setId(newId);
+			if (enc.getPatient().getUuid().equals(updatedPatient.getUuid())) {
+				if (enc.getPatient().getId() == oldId) {
+					// Update it of the new Patient Id
+					enc.getPatient().setId(updatedPatient.getId());
+				}
 			}
 		}
 	}
 	
 	@Override
 	public List<Patient> getAllPatients() throws APIException {
-		
 		return Context.getPatientService().getAllPatients();
 	}
 	
 	@Override
 	public List<Patient> getAllPatients(boolean includeVoided) throws APIException {
-		
 		return Context.getPatientService().getAllPatients(includeVoided);
 	}
 	
@@ -105,7 +106,7 @@ public class PatientResourceServiceImpl extends BaseOpenmrsService implements Pa
 				
 				// TODO cater for auditing of updated Resources
 				if (savedPatient != null) {
-					updateEncountersOfTheIdentifiersIfRequired(oldId, savedPatient.getId(), encounters);
+					updateEncountersOfTheIdentifiersIfRequired(oldId, savedPatient, encounters);
 					savedPatients.add(savedPatient);
 					counter++;
 				}
@@ -128,13 +129,14 @@ public class PatientResourceServiceImpl extends BaseOpenmrsService implements Pa
 	 */
 	private Patient inspectPatientPropertiesAndModifyThemAccordingly(Patient patient) {
 		patient.setId(null);
+		patient.setPersonId(null);
+		
 		if (patient.getPersonName() != null) {
 			patient.getPersonName().setId(null);
 		}
 		Set<PatientIdentifier> identifiers = patient.getIdentifiers();
 		for (PatientIdentifier id : identifiers) {
 			id.setId(null);
-			// Not sure of this
 			id.setPatient(null);
 		}
 		return patient;

@@ -364,32 +364,25 @@ public class ObjectUtils {
 		return required;
 	}
 	
-	public static void addItemsToListWithoutDuplication(List<Encounter> listToAddItems, List<Encounter> sourceOfItems) {
-		if (listToAddItems == null || sourceOfItems == null) {
+	public static void addItemsToListWithoutDuplication(List<Encounter> encounterStoreList, List<Encounter> sourceOfItems) {
+		if (encounterStoreList == null || sourceOfItems == null) {
 			return;
 		}
-		List<Encounter> itemsToBeAdded;
-		for (Encounter nextObjectToAdd : sourceOfItems) {
-			if (nextObjectToAdd != null) {
-				if (listToAddItems.size() > 0) {
-					itemsToBeAdded = new ArrayList<>();
-					for (Encounter alreadyAddedItem : listToAddItems) {
-						if (alreadyAddedItem.getUuid().equals(nextObjectToAdd.getUuid()) && alreadyAddedItem.getId().equals(nextObjectToAdd.getId())) {
-							continue;
-						} else {
-							itemsToBeAdded.add(nextObjectToAdd);
-						}
+		List<Encounter> filteredEncounterList = new ArrayList<>();
+		outerLoop : for (Encounter candidate : sourceOfItems) {
+			if (filteredEncounterList.isEmpty()) {
+				filteredEncounterList.add(candidate);
+			} else {
+				// Check whether this Item isn't a duplicate
+				for (Encounter presentEnc : filteredEncounterList) {
+					if (presentEnc.getUuid().equals(candidate.getUuid())) {
+						continue outerLoop;
 					}
-					if (itemsToBeAdded != null) {
-						for (Encounter item : itemsToBeAdded) {
-							listToAddItems.add(item);
-						}
-						itemsToBeAdded = null;
-					}
-				} else {
-					listToAddItems.add(nextObjectToAdd);
 				}
+				// Could be its not a duplicate
+				filteredEncounterList.add(candidate);
 			}
 		}
+		encounterStoreList.addAll(filteredEncounterList);
 	}
 }

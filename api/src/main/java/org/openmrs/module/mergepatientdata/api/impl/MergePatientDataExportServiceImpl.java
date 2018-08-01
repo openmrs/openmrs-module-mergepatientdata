@@ -45,7 +45,8 @@ public class MergePatientDataExportServiceImpl implements MergePatientDataExport
 			if (resource.isAssignableFrom(Patient.class)) {
 				store.addType(MergeAbleDataCategory.PATIENT);
 				PatientResourceService patientResourceService = new PatientResourceServiceImpl();
-				Set<org.openmrs.Patient> openmrsPatients = new HashSet<>(patientResourceService.getAllPatients());	
+				// We currently not merging voided Patients
+				Set<org.openmrs.Patient> openmrsPatients = new HashSet<>(patientResourceService.getAllPatients(false));
 				try {
 					resourceMapCounter = resourceMapCounter == null ? new HashMap<>() : resourceMapCounter;
 					List<Patient> patients = (List<Patient>) ObjectUtils
@@ -57,7 +58,6 @@ public class MergePatientDataExportServiceImpl implements MergePatientDataExport
 					log.error(e.getMessage());
 					auditor.getFailureDetails().add(e.getMessage());
 				}
-				continue; 
 			}
 			if (resource.isAssignableFrom(Encounter.class)) {
 				store.addType(MergeAbleDataCategory.ENCOUNTER);
@@ -66,22 +66,26 @@ public class MergePatientDataExportServiceImpl implements MergePatientDataExport
 				if (store.getPatients() != null) {
 					store.setEncounters(new ArrayList<>());
 					List<Patient> patientsWhoseEncountersAreRequired = store.getPatients();
+					List<Encounter> encounterCandidates = new ArrayList<>();
 					for (Patient pat : patientsWhoseEncountersAreRequired) {
 						List<org.openmrs.Encounter> encounters = Context.getEncounterService().
 								getEncountersByPatientIdentifier(pat.getPatientIdentifier().getIdentifier());
 						try {
-							// If Patient has Encounters
 							if (encounters != null) {
 								List<Encounter> mpdEncounters = (List<Encounter>) ObjectUtils.
 										getMPDResourceObjectsFromOpenmrsResourceObjects(new HashSet<>(encounters));
-								// Add Encounters but not including duplicates
-								ObjectUtils.addItemsToListWithoutDuplication(store.getEncounters(), mpdEncounters);
+								for (Encounter enc : mpdEncounters) {
+									encounterCandidates.add(enc);
+								}
 							}
 						} catch (MPDException e) {
 							log.error(e.getMessage());
 							auditor.getFailureDetails().add(e.getMessage());
 						}
 					}
+					// Add Encounters but not including duplicates
+					ObjectUtils.addItemsToListWithoutDuplication(store.getEncounters(), encounterCandidates);
+					auditor.getResourceCount().put("Encounter", store.getEncounters().size());
 				} else {
 					auditor.getFailureDetails().add("Patient Resource Required to Export Encounter Resource");
 					auditor.setStatus(Status.Failure);

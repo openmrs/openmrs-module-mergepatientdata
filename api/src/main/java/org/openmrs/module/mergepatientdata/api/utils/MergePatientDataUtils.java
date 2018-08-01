@@ -157,7 +157,7 @@ public class MergePatientDataUtils {
 						return;
 					}
 					new EncounterResourceServiceImpl().saveEncounters(MergePatientDataUtils
-					        .filterOutEncountersToMergeAgainstPatients(store.getEncounters(), savedPatients));
+					        .filterOutEncountersToMergeAgainstPatients(store.getEncounters(), savedPatients), auditor);
 				}
 			}
 		}

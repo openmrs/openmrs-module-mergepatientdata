@@ -1,7 +1,6 @@
 package org.openmrs.module.mergepatientdata.api.impl;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,16 +46,10 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 	public File serialize(MPDStore store) {
 		String filePath = MergePatientDataEncryptionUtils.getSerializedFilePath();
 		log.info("Serializing to '" + filePath + "'");
-		
-		// Stop gson from storing bytes in runtime memory
-		// This causes out of memory problems
-		// TODO should resort something like streaming @see https://sites.google.com/site/gson/streaming
-		//byte[] bytes = gson.toJson(store).getBytes();
 		File inputfile = new File(filePath);
 		
 		try {
 			FileWriter writer = new FileWriter(inputfile);
-			//BufferedWriter bwriter = new BufferedWriter(writer);
 			Gson gson = new GsonBuilder().create();
 			gson.toJson(store, writer);
 			
