@@ -48,7 +48,6 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void saveEncounters(List<Encounter> list, PaginatedAuditMessage auditor) {
-		
 		if (list != null && list.isEmpty()) {
 			return;
 		}
@@ -65,29 +64,26 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 			if (encounter.getId() != null) {
 				org.openmrs.Encounter enc = Context.getEncounterService().getEncounterByUuid(encounter.getUuid());
 				if (enc != null) {
-					System.out.println("Existing Encounter's patient Id " + enc.getPatient().getId());
-					System.out.println("New Encounter's patient Id " + encounter.getPatient().getId());
+			
 					if (encounter.getPatient().getId() == enc.getPatient().getId()) {
 						// Clear the Session to make the update possible
-						System.out.println("Encounter found existing");
 						Context.clearSession();
 						// Mean while, don't update, just continue
 						continue;
 					} else {
+						log.warn("Encounter " + encounter.getId() + " seems to be existing but on a wrong Patient");
 						// This means that this Encounter already exists but was assigned to a wrong Patient
 						// TODO Implement something better to solve this
 						// Lets void this Encounter found
 						enc.setVoided(true);
 						enc.setVoidReason("This Encounter was assigned to a wrong Patient During Transer");
 						Context.getEncounterService().saveEncounter(enc);
-						System.out.println("Taking updating measures ...");
 						// Lets Do the actual update
 						encounter.setId(null);
 						encounter.setUuid(null);
 						//Context.getEncounterService().purgeEncounter(enc);
 						inspectEncounterPropertiesAndModifyIfRequired(encounter);
-						System.out.println("Upated an Encounter to " + encounter.getPatient().getGivenName());
-						System.out.println(Context.getEncounterService().getEncounter(enc.getId()));
+				
 					}
 				} else {
 					encounter.setId(null);
@@ -103,7 +99,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 	}
 	
 	private org.openmrs.Encounter inspectEncounterPropertiesAndModifyIfRequired(org.openmrs.Encounter enc) {
-		System.out.println("Creating an encounter for patient " + enc.getPatient().getId() + " with uuid " + enc.getUuid());
+		log.debug("Started inspecting properties of " + enc);
 		// Update Location Resource
 		Location location = enc.getLocation();
 		Integer oldLocationId;
@@ -218,11 +214,12 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 		}
 		
 		enc.setObs(observations);
-		
+		log.debug("Ended Inspecting Encounter properties");
 		return enc;
 	}
 	
 	private Obs inspectObsPropertiesAndModifyIfRequired(Obs obs, org.openmrs.Encounter enc) {
+		log.debug("Inspecting Obs " + obs);
 		obs.setId(null);
 		// Since an Encounter is for one specific Patient, lets assume also the Obs is for one Patient
 		obs.setPerson(new Person(enc.getPatient().getId()));
@@ -245,6 +242,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 	}
 	
 	private Concept inspectConceptPropertiesAndModifyIfRequired(Concept concept, Obs obs) {
+		log.debug("Inspecting Concept " + concept);
 		if (concept != null) {
 			// Prove that the concept exists
 			Concept existingConcept = Context.getConceptService().getConcept(concept.getId());
