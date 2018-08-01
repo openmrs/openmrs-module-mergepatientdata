@@ -83,8 +83,6 @@ public class MergePatientDataUtilsTest extends BaseModuleContextSensitiveTest {
 		MergePatientDataUtils.mergeResourceToOpenmrsDataBase(store, typesToImport, auditor);
 	}
 	
-	@Ignore
-	// For now we don't support Encounter update
 	@Test
 	// Disabled updating encounters for now
 	@Ignore
