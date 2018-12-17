@@ -19,8 +19,6 @@ import com.google.gson.JsonSerializer;
 
 public class PaginatedAuditMessage {
 	
-	private static final String date_Format = "yyyy-MM-dd HH:mm:ss";
-	
 	private int id;
 	
 	private Operation operation;

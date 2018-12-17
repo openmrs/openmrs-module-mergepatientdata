@@ -51,12 +51,10 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 		if (list != null && list.isEmpty()) {
 			return;
 		}
-		
 		List<org.openmrs.Encounter> encounters = (List<org.openmrs.Encounter>) ObjectUtils
 		        .getOpenmrsResourceObjectsFromMPDResourceObjects(list);
 		
 		int counter = 0;
-		
 		for (org.openmrs.Encounter encounter : encounters) {
 			// We are currently not supporting visits
 			encounter.setVisit(null);
@@ -64,7 +62,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 			if (encounter.getId() != null) {
 				org.openmrs.Encounter enc = Context.getEncounterService().getEncounterByUuid(encounter.getUuid());
 				if (enc != null) {
-			
+					
 					if (encounter.getPatient().getId() == enc.getPatient().getId()) {
 						// Clear the Session to make the update possible
 						Context.clearSession();
@@ -81,9 +79,8 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 						// Lets Do the actual update
 						encounter.setId(null);
 						encounter.setUuid(null);
-						//Context.getEncounterService().purgeEncounter(enc);
 						inspectEncounterPropertiesAndModifyIfRequired(encounter);
-				
+						
 					}
 				} else {
 					encounter.setId(null);
@@ -102,10 +99,7 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 		log.debug("Started inspecting properties of " + enc);
 		// Update Location Resource
 		Location location = enc.getLocation();
-		Integer oldLocationId;
-		Integer newLocationId;
 		if (location != null) {
-			oldLocationId = location.getId();
 			if (location.getUuid() != null) {
 				Location existingLocation = Context.getLocationService().getLocationByUuid(location.getUuid());
 				// Check if its already existing
@@ -260,4 +254,5 @@ public class EncounterResourceServiceImpl implements EncounterResourceService {
 		}
 		return concept;
 	}
+	
 }

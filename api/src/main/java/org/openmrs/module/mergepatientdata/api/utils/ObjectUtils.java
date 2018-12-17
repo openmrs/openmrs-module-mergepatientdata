@@ -47,7 +47,6 @@ public class ObjectUtils {
 			        .collect(Collectors.toList());
 			String clazz = MergePatientDataUtils.getClassName(openmrsResourceObjects);
 			switch (clazz) {
-			
 				case MergePatientDataConstants.PATIENT_RESOURCE_NAME:
 					log.info("Converting to MPD PatientResource");
 					return convertToMPDPatient(openmrsResourceObjects);
@@ -94,7 +93,6 @@ public class ObjectUtils {
 					
 				default:
 					throw new MPDException("UnSupported Type : " + clazz);
-					
 			}
 			
 		} else {
@@ -108,7 +106,6 @@ public class ObjectUtils {
 		if (mpdList != null) {
 			String clazz = MergePatientDataUtils.getClassName(mpdList);
 			switch (clazz) {
-			
 				case MergePatientDataConstants.PATIENT_RESOURCE_NAME:
 					log.debug("Converting to MPD PatientResource");
 					return covertToOpenmrsPatientObjects(mpdList);
@@ -355,13 +352,13 @@ public class ObjectUtils {
 	 * @return
 	 */
 	public static boolean typeRequired(Class resourceType, List<Class> resourceTypesToImport) {
-		boolean required = false;
+		boolean typeRequired = false;
 		for (Class type : resourceTypesToImport) {
 			if (type.isAssignableFrom(resourceType)) {
-				required = true;
+				typeRequired = true;
 			}
 		}
-		return required;
+		return typeRequired;
 	}
 	
 	public static void addItemsToListWithoutDuplication(List<Encounter> encounterStoreList, List<Encounter> sourceOfItems) {

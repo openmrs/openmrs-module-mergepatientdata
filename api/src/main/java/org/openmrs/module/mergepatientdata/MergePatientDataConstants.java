@@ -51,4 +51,6 @@ public class MergePatientDataConstants {
 	public static final String CONCEPTNAMETAG_RESOURCE_NAME = "ConceptNameTag";
 	
 	public static final String ENCOUNTER_RESOURCE_NAME = "Encounter";
+	
+	public static final String MPD_BATCH_DIR_NAME = "Data";
 }

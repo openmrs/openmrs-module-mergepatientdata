@@ -7,6 +7,6 @@ import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage
 
 public interface MergePatientDataImportService {
 	
-	public void importMPD(List<Class> classesToImport, File encryptedFile, PaginatedAuditMessage auditor);
+	public void importMPD(List<Class> classesToImport, File zippedDataFile, PaginatedAuditMessage auditor);
 	
 }

@@ -26,6 +26,9 @@ public class Form extends BaseOpenmrsObject implements MergeAbleResource {
 	private Set<FormField> formFields;
 	
 	public Form(org.openmrs.Form form, Boolean initializeComplexMetaData) {
+		if (form == null) {
+			return;
+		}
 		this.name = form.getName();
 		this.description = form.getDescription();
 		this.setUuid(form.getUuid());

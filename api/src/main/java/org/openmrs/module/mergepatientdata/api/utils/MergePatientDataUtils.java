@@ -116,7 +116,6 @@ public class MergePatientDataUtils {
 	 */
 	private static Class getMPDTypeFromOpenmrsClassName(String openmrsClassName) {
 		List<MergeAbleResource> supportedClasses = client.getSupportedClasses();
-		
 		if (openmrsClassName != null) {
 			for (MergeAbleResource object : supportedClasses) {
 				String objectName = object.getClass().getSimpleName();
@@ -134,7 +133,7 @@ public class MergePatientDataUtils {
 	}
 	
 	/**
-	 * Merges a given ResouceType to the database.
+	 * Merges a given Resources to the database.
 	 * 
 	 * @param resourceType
 	 * @param resourceTypesToImport
@@ -148,16 +147,19 @@ public class MergePatientDataUtils {
 				if (ObjectUtils.typeRequired(Patient.class, resourceTypesToImport)) {
 					savedPatients = new PatientResourceServiceImpl().savePatients(store.getPatients(), auditor,
 					    store.getEncounters());
+					// TODO update the references e.g Encounters to these saved patients
+					// It's most probably they gotta new IDs
+					
 				}
 			}
 			if (resourceCategory == MergeAbleDataCategory.ENCOUNTER) {
 				if (ObjectUtils.typeRequired(Encounter.class, resourceTypesToImport)) {
 					if (savedPatients == null) {
-						auditor.getFailureDetails().add("Found no Patient Resource To Merge Encounter Data Against");
+						auditor.getFailureDetails().add("Found no Patients To Merge Encounter Data Against");
 						return;
 					}
 					new EncounterResourceServiceImpl().saveEncounters(MergePatientDataUtils
-					        .filterOutEncountersToMergeAgainstPatients(store.getEncounters(), savedPatients), auditor);
+					        .filterOutEncountersToMergeAgainstSavedPatients(store.getEncounters(), savedPatients), auditor);
 				}
 			}
 		}
@@ -170,13 +172,16 @@ public class MergePatientDataUtils {
 	 * @param patients patients whose encounters should be returned
 	 * @return filtered {@link Encounter} list
 	 */
-	private static List<Encounter> filterOutEncountersToMergeAgainstPatients(List<Encounter> encounters, List<org.openmrs.Patient> patients) {
+	private static List<Encounter> filterOutEncountersToMergeAgainstSavedPatients(List<Encounter> encounters, List<org.openmrs.Patient> patients) {
+		
 		if (encounters == null || patients == null) {
 			return null;
 		}
 		List<Encounter> qualifyingEncounters = new ArrayList<>();
 		for (org.openmrs.Patient patient : patients) {
+			
 			for (Encounter candidate : encounters) {
+				
 				if (candidate.getPatient().getId() == patient.getId()) {
 					// Make sure its not included yet
 					if (!encounterAlreadyIncludedToList(qualifyingEncounters, candidate)) {
@@ -185,6 +190,7 @@ public class MergePatientDataUtils {
 				}
 			}
 		}
+		
 		return qualifyingEncounters;
 	}
 	

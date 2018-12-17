@@ -3,30 +3,24 @@ package org.openmrs.module.mergepatientdata.api;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mergepatientdata.api.model.audit.PaginatedAuditMessage;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 import org.openmrs.module.mergepatientdata.enums.Operation;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import junit.framework.Assert;
 
 public class PatientResourceServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -42,13 +36,13 @@ public class PatientResourceServiceTest extends BaseModuleContextSensitiveTest {
 		patient = new Patient();
 		PersonName pName = new PersonName();
 		pName.setGivenName("Samuel");
-		pName.setMiddleName("Male");
-		pName.setFamilyName("Muswa");
+		pName.setMiddleName("Dari");
+		pName.setFamilyName("Family");
 		
 		patient.addName(pName);
 		
 		PersonAddress address = new PersonAddress();
-		address.setAddress1("Mubende");
+		address.setAddress1("Address");
 		
 		patient.addAddress(address);
 		patient.setBirthdate(new Date());

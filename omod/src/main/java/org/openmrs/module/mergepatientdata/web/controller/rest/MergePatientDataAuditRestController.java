@@ -2,6 +2,7 @@ package org.openmrs.module.mergepatientdata.web.controller.rest;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mergepatientdata.api.MergePatientDataAuditService;
+import org.openmrs.module.mergepatientdata.api.utils.MergePatientDataConfigurationUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,12 @@ public class MergePatientDataAuditRestController {
 		auditService = Context.getService(MergePatientDataAuditService.class);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
 		        .body(auditService.getAuditMessages(pageIndex, pageSize));
-		
+	}
+	
+	@RequestMapping(value = "/workingDirPath", method = RequestMethod.GET)
+	@ResponseBody
+	public String getMpdWorkingDirectoryFilePath() {
+		System.out.println("Controller called...");
+		return MergePatientDataConfigurationUtils.getMPDWorkingDir().getAbsolutePath();
 	}
 }

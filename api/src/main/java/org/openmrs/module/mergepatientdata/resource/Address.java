@@ -1,6 +1,5 @@
 package org.openmrs.module.mergepatientdata.resource;
 
-import java.util.Date;
 import java.util.Objects;
 
 import org.openmrs.BaseOpenmrsObject;

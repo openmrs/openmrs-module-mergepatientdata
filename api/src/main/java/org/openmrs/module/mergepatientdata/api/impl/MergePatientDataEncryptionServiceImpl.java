@@ -40,13 +40,14 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 	
 	private final Logger log = LoggerFactory.getLogger(MergePatientDataEncryptionServiceImpl.class);
 	
-	private MergePatientDataAuditService auditService;
-	
+	/**
+	 * @see org.openmrs.module.mergepatientdata.api.MergePatientDataEncryptionService#serialize(MPDStore)
+	 */
 	@Override
 	public File serialize(MPDStore store) {
-		String filePath = MergePatientDataEncryptionUtils.getSerializedFilePath();
+		String filePath = MergePatientDataEncryptionUtils.getMpdBatchDirPath();
 		log.info("Serializing to '" + filePath + "'");
-		File inputfile = new File(filePath);
+		File inputfile = new File(filePath, MergePatientDataConstants.MPD_SERIALIZED_FILE_NAME);
 		
 		try {
 			FileWriter writer = new FileWriter(inputfile);
@@ -58,21 +59,21 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 		catch (IOException e) {
 			log.error(e.getMessage());
 		}
-		
 		return inputfile;
 	}
 	
+	/**
+	 * @see org.openmrs.module.mergepatientdata.api.MergePatientDataEncryptionService#deserialize(File)
+	 */
 	@Override
 	public MPDStore deserialize(File file) {
 		Gson gson = new Gson();
 		MPDStore store = null;
 		try {
-			
 			InputStream input = new FileInputStream(file);
 			BufferedReader buffer = new BufferedReader(new InputStreamReader(input));
 			store = gson.fromJson(buffer, MPDStore.class);
 			buffer.close();
-			
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -83,18 +84,24 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 		return store;
 	}
 	
+	/**
+	 * @see org.openmrs.module.mergepatientdata.api.MergePatientDataEncryptionService#encrypt(File,
+	 *      PaginatedAuditMessage)
+	 */
 	@Override
-	public File encrypt(File inputFile, PaginatedAuditMessage auditor) {
+	public File encrypt(File inputFile, PaginatedAuditMessage auditor, Integer batch) {
 		log.info("Encrypting data");
-		String outputFilePath = MergePatientDataEncryptionUtils.getEncryptedMPDFilePath();
-		File outputFile = new File(outputFilePath);
+		File outputFile = new File(MergePatientDataEncryptionUtils.getMpdBatchDirPath(), batch + "-"
+		        + MergePatientDataConstants.ENCRYPTED_PATIENT_DATA_FILE_NAME);
 		doCryptography(Cipher.ENCRYPT_MODE, inputFile, outputFile, auditor);
 		auditor.setStatus(Status.Success);
-		auditService = Context.getService(MergePatientDataAuditService.class);
-		auditService.saveAuditMessage(auditor);
 		return outputFile;
 	}
 	
+	/**
+	 * @see org.openmrs.module.mergepatientdata.api.MergePatientDataEncryptionService#decrypt(File,
+	 *      PaginatedAuditMessage)
+	 */
 	@Override
 	public File decrypt(File inputFile, PaginatedAuditMessage auditor) {
 		File outputFile = new File(MergePatientDataEncryptionUtils.getSerializedFilePath());
@@ -105,6 +112,14 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 		return outputFile;
 	}
 	
+	/**
+	 * Convenience method delegated to do an encryption plus its reverse
+	 * 
+	 * @param cipherMode
+	 * @param input
+	 * @param output
+	 * @param auditor
+	 */
 	private void doCryptography(int cipherMode, File input, File output, PaginatedAuditMessage auditor) {
         FileInputStream inputStream = null;
         FileOutputStream outputStream = null;
@@ -123,9 +138,7 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 			inputStream = new FileInputStream(input);
 		} catch (FileNotFoundException e1) {
 			auditor.getFailureDetails().add(e1.getMessage());
-			e1.printStackTrace();
-			//TODO: Try look through the mpd dir and edit the file name. Chances are high for the name to differ "name(2).mpd"
-			//TODO: Clean the working dir
+			log.error(e1.getMessage());
 		}
 		try {
 			cipher = Cipher.getInstance(MergePatientDataConstants.TRANSFORMATION);
@@ -149,7 +162,7 @@ public class MergePatientDataEncryptionServiceImpl implements MergePatientDataEn
 			}
 		} catch (IllegalBlockSizeException | BadPaddingException | IOException e) {
 			log.error(e.getMessage());
-			//Delete the invalid file
+			// Delete the invalid file
 			input.delete(); 
 			throw new MPDException(e);
 		}

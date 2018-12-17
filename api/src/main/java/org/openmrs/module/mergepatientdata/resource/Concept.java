@@ -63,7 +63,12 @@ public class Concept implements Customizable<ConceptAttribute>, MergeAbleResourc
 	
 	public Concept() {}
 
+	public Concept(String uuid) {
+		this.uuid = uuid;
+	}
+	
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public Concept(org.openmrs.Concept concept, Boolean setComplexMetadata) {
 		if (concept == null) {
 			return;

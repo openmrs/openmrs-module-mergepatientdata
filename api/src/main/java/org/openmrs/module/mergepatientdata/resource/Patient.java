@@ -75,7 +75,11 @@ public class Patient extends BaseOpenmrsMetadata implements MergeAbleResource {
             patient.setBirthdate(person.getBirthdate());
             patient.setDead(person.getDead());
             patient.setDeathDate(person.getDeathDate());
-            patient.setCauseOfDeath(person.getCauseOfDeath());
+            if (person.getCauseOfDeath() != null) {
+            	org.openmrs.Concept causeOfDeath = new org.openmrs.Concept();
+            	causeOfDeath.setUuid(person.getCauseOfDeath().getUuid());
+            	patient.setCauseOfDeath(causeOfDeath);
+            }
             Set<PersonName> personNameSet = new TreeSet<>();
             PersonName preferredName = null;
             if (person.getPreferredName() != null) {

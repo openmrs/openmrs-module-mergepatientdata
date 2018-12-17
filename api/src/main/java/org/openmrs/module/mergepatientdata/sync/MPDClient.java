@@ -2,7 +2,6 @@ package org.openmrs.module.mergepatientdata.sync;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.openmrs.module.mergepatientdata.MergePatientDataConstants;
@@ -46,7 +45,7 @@ public class MPDClient {
 				configuration.getGeneral().getLocalInstanceId());
 	}
 	
-	public PaginatedAuditMessage importData(MPDConfiguration configuration, File encryptedFile) {
+	public PaginatedAuditMessage importData(MPDConfiguration configuration, File zippedZile) {
 		auditor.setResources(new ArrayList<>());
 		auditor.setFailureDetails(new ArrayList<>());
 		auditor.setOperation(Operation.IMPORT);
@@ -54,7 +53,7 @@ public class MPDClient {
 		List<Class> resourceClassesToImport = MergePatientDataUtils.getRequiredTypesToMerge(configuration,
 		    MergePatientDataConstants.IMPORT_GENERAL_NAME, auditor);
 		importService = new MergePatientDataImportServiceImpl();
-		importService.importMPD(resourceClassesToImport, encryptedFile, auditor);
+		importService.importMPD(resourceClassesToImport, zippedZile, auditor);
 		return auditor;
 	}
 	

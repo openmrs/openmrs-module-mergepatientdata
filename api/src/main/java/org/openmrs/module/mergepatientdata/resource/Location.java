@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 
@@ -79,6 +78,10 @@ public class Location implements MergeAbleResource {
 	 *            prevents {@link java.lang.StackOverflowError} Exception.
 	 */
 	public Location(org.openmrs.Location openmrsLocation, Boolean initializeMoreMetaData) {
+		
+		if (openmrsLocation == null) {
+			return;
+		}
 		this.id = openmrsLocation.getId();
 		this.uuid = openmrsLocation.getUuid();
 		this.description = openmrsLocation.getDescription();

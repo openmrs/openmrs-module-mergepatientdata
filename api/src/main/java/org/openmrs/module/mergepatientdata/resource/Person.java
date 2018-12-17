@@ -8,7 +8,6 @@ import java.util.TreeSet;
 
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.Concept;
 import org.openmrs.module.mergepatientdata.api.utils.ObjectUtils;
 
 public class Person extends BaseOpenmrsMetadata implements MergeAbleResource {
@@ -35,7 +34,7 @@ public class Person extends BaseOpenmrsMetadata implements MergeAbleResource {
 	
 	private Boolean dead;
 	
-	private Concept causeOfDeath; // Take care of this field. It could cause Hibernate proxy issues
+	private Concept causeOfDeath;
 	
 	private Date deathDate;
 	
@@ -69,7 +68,10 @@ public class Person extends BaseOpenmrsMetadata implements MergeAbleResource {
 		this.age = openmrsPerson.getAge();
 		this.gender = openmrsPerson.getGender();
 		this.dead = openmrsPerson.getDead();
-		this.causeOfDeath = openmrsPerson.getCauseOfDeath();
+		
+		if (openmrsPerson.getCauseOfDeath() != null) {
+			this.causeOfDeath = new Concept(openmrsPerson.getCauseOfDeath().getUuid());
+		}
 		this.deathDate = openmrsPerson.getDeathDate();
 		this.voided = openmrsPerson.getVoided();
 		this.deathdateEstimated = openmrsPerson.getDeathdateEstimated();
@@ -105,11 +107,15 @@ public class Person extends BaseOpenmrsMetadata implements MergeAbleResource {
 		openmrsPerson.setBirthdateEstimated(birthdateEstimated);
 		openmrsPerson.setGender(gender);
 		openmrsPerson.setDead(dead);
-		openmrsPerson.setCauseOfDeath(causeOfDeath);
 		openmrsPerson.setDeathDate(deathDate);
 		openmrsPerson.setVoided(voided);
 		openmrsPerson.setBirthdate(birthdate);
 		openmrsPerson.setDeathdateEstimated(deathdateEstimated);
+		if (causeOfDeath != null) {
+			org.openmrs.Concept causeOfDeath = new org.openmrs.Concept();
+			causeOfDeath.setUuid(this.causeOfDeath.getUuid());
+			openmrsPerson.setCauseOfDeath(causeOfDeath);
+		}
 		return openmrsPerson;
 	}
 	

@@ -9,7 +9,7 @@ public interface MergePatientDataEncryptionService {
 	
 	public File serialize(MPDStore store);
 	
-	public File encrypt(File inputFile, PaginatedAuditMessage auditor);
+	public File encrypt(File inputFile, PaginatedAuditMessage auditor, Integer batch);
 	
 	public MPDStore deserialize(File inputFile);
 	
