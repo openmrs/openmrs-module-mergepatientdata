@@ -18,10 +18,9 @@
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
 
 	<scm>
-		<connection>scm:git:git@github.com:samuelmale/openmrs-module-mergepatientdata.git</connection>
-		<developerConnection>scm:git:git@github.com:samuelmale/openmrs-module-mergepatientdata.git</developerConnection>
-		<url>https://github.com/samuelmale/openmrs-module-mergepatientdata/</url>
-		<tag>HEAD</tag>
+		<connection>scm:git:git@github.com:openmrs/openmrs-module-mergepatientdata.git</connection>
+		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-mergepatientdata.git</developerConnection>
+		<url>https://github.com/openmrs/openmrs-module-mergepatientdata/</url>
 	</scm>
 
 	<modules>
@@ -41,21 +40,6 @@
 						<target>${javaVersion}</target>
 					</configuration>
 				</plugin>
-				
-				<plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9.1</version>
-                </plugin>
-				
-				<plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.4.2</version>
-                    <configuration>
-                          <!-- refapp distro contains SNAPSHOT dependencies -->
-                          <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
-                    </configuration>
-                </plugin>
 			</plugins>
 		</pluginManagement>
 	
@@ -94,17 +78,4 @@
         <legacyuiVersion>1.0</legacyuiVersion>
         <uicommonsVersion>2.3.0</uicommonsVersion>
 	</properties>
-	
-	<distributionManagement>
-      <repository>
-         <id>openmrs-repo-modules</id>
-         <name>OpenMRS Nexus Modules</name>
-         <url>http://mavenrepo.openmrs.org/nexus/content/repositories/modules</url>
-      </repository>
-      <snapshotRepository>
-        <id>openmrs-repo-snapshots</id>
-        <name>OpenMRS Nexus Snapshots</name>
-        <url>http://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
-      </snapshotRepository>
-    </distributionManagement>
 </project>
