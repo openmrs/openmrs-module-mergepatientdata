@@ -14,9 +14,19 @@
 	<packaging>pom</packaging>
 	<name>Mergepatientdata</name>
 	<description>OpenMRS module used for merging patient data from one OpenMRS instance to another.</description>
+	<url>https://wiki.openmrs.org/display/docs/Mergepatientdata+Module</url>
 
-	<url>https://wiki.openmrs.org/x/FQ4z</url>
-
+	<developers>
+		<developer>
+			<name>Samuel Male</name>
+		</developer>
+	</developers>
+	
+	<organization>
+		<name>OpenMRS</name>
+		<url>http://openmrs.org</url>
+	</organization>
+	
 	<scm>
 		<connection>scm:git:git@github.com:samuelmale/openmrs-module-mergepatientdata.git</connection>
 		<developerConnection>scm:git:git@github.com:samuelmale/openmrs-module-mergepatientdata.git</developerConnection>
@@ -58,7 +68,6 @@
                 </plugin>
 			</plugins>
 		</pluginManagement>
-	
 	</build>
 
 	<repositories>
@@ -66,12 +75,6 @@
 			<id>openmrs-repo</id>
 			<name>OpenMRS Nexus Repository</name>
 			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
-		</repository>
-		<repository>
-			<id>central</id>
-			<name>Maven Repository Switchboard</name>
-			<layout>default</layout>
-			<url>http://repo1.maven.org/maven2</url>
 		</repository>
 	</repositories>
 	 
