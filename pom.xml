@@ -28,9 +28,9 @@
 	</organization>
 	
 	<scm>
-		<connection>scm:git:git@github.com:samuelmale/openmrs-module-mergepatientdata.git</connection>
-		<developerConnection>scm:git:git@github.com:samuelmale/openmrs-module-mergepatientdata.git</developerConnection>
-		<url>https://github.com/samuelmale/openmrs-module-mergepatientdata/</url>
+		<connection>scm:git:git@github.com:openmrs/openmrs-module-mergepatientdata.git</connection>
+		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-mergepatientdata.git</developerConnection>
+		<url>https://github.com/openmrs/openmrs-module-mergepatientdata/</url>
 		<tag>HEAD</tag>
 	</scm>
 
